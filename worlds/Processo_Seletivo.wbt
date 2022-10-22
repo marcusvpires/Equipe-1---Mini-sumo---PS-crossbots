@@ -1,0 +1,44 @@
+#VRML_SIM R2021a utf8
+WorldInfo {
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation 0.0609541913052109 -0.9965618912836471 -0.05611580350924301 4.791567231744662
+  position 1.176657536044431 0.7990633374314038 -0.7604701354199422
+}
+Khepera3 {
+  hidden position_0_0 116.70381174692992
+  hidden position_0_1 116.80974563488887
+  hidden rotation_1 -1 0 0 3.6064762176973586
+  hidden rotation_2 -1 0 0 3.7124101056563132
+  translation 0.41948206104845753 0.4964836850985738 -0.863664224059661
+  rotation 0.000798767433326457 -0.999999529834217 -0.0005498199091216369 -1.2054503224849977
+  controller "KheperaIII_C"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+  castShadows FALSE
+}
+CircleArena {
+  translation 0 0.5 -1
+  radius 0.5
+  floorAppearance PBRAppearance {
+    baseColor 0 0 0
+    roughness 1
+    metalness 0
+    occlusionMap ImageTexture {
+      url [
+        "textures/parquetry/chequered_parquetry_occlusion.jpg"
+      ]
+    }
+  }
+  wallThickness 0.03
+  wallHeight 0.0001
+  wallAppearance PBRAppearance {
+    metalness 0
+  }
+}
+RubberDuck {
+  translation -0.07 0.52 -1.04
+}
