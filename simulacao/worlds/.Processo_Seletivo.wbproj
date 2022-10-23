@@ -5,6 +5,6 @@ sceneTreePerspectives: 000000ff00000001000000020000016b000000fa01000000020100000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 0 "controllers/1K3-bate-volta/1K3-bate-volta.c" "controllers/1K4-calculos/1K4-calculos.c"
+textFiles: 1 "controllers/1K3-bate-volta/1K3-bate-volta.c" "controllers/1K4-calculos/1K4-calculos.c"
 consoles: Console:All:All
 renderingDevicePerspectives: Khepera IV:camera;1;0.135638;0;0

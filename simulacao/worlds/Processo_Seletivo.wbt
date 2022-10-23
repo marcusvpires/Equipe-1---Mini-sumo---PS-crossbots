@@ -37,6 +37,6 @@ CircleArena {
 }
 Khepera4 {
   translation -0.29 0.5 -1.07
-  rotation 0 1 0 1.309
+  rotation 0 1 0 -1.8325953071795862
   controller "1K4-calculos"
 }
