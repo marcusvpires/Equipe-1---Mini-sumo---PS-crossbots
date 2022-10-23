@@ -1,4 +1,4 @@
-build/release/controle-c.o: controle-c.c \
+build/release/1K3-bate-volta.o: 1K3-bate-volta.c \
  C:\Users\marcu\AppData\Local\Programs\Webots/include/controller/c/webots/distance_sensor.h \
  C:\Users\marcu\AppData\Local\Programs\Webots/include/controller/c/webots/types.h \
  C:\Users\marcu\AppData\Local\Programs\Webots/include/controller/c/webots/robot.h \
