@@ -30,7 +30,6 @@ us03.enable(TIME_STEP)
 
 ##-------------------------------------------------------##
 while robot.step(TIME_STEP) != -1: #Insira dentro desse laço while o código que rodará continuamente (estilo loop do arduino)
-    roda_esquerda.setVelocity(8)
-    pass
+    roda_esquerda.setVelocity(10.0)
 
 

@@ -41,24 +41,8 @@ int main()
   //-------------------------------------------------------//
   
   while(wb_robot_step(TIME_STEP) != -1) //Insira dentro desse laço while o código que rodará continuamente (estilo loop do arduino)
-  {
-    const double infraLV = wb_distance_sensor_get_value(infraL);
-    const double infraLR = wb_distance_sensor_get_value(infraR);
-    
-    
-    
-    if ( infraLV > 2000 || infraLR > 2000) {
-      if ( infraLV > infraLR ) {
-        wb_motor_set_velocity(roda_direita, 0);
-        wb_motor_set_velocity(roda_esquerda, 10);
-      } else {
-        wb_motor_set_velocity(roda_direita, 10);
-        wb_motor_set_velocity(roda_esquerda, 0);
-      }
-    } else {
-      wb_motor_set_velocity(roda_direita, 10);
-      wb_motor_set_velocity(roda_esquerda, 10);
-    }
+  {   
+    wb_motor_set_velocity(roda_direita, 2.0);
   }
   
   //----------------------NÃO ALTERAR----------------------// 
