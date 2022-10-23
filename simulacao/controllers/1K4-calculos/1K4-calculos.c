@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h> 
 
 #define MAX_SPEED 47.6
 
@@ -69,20 +70,54 @@ int main(int argc, char **argv) {
   wb_motor_set_velocity(motor_esquerdo, 0.0);
   wb_motor_set_velocity(motor_direito, 0.0);
 
-  // store the last time a message was displayed
   int last_display_second = 0;
+  double velocidade_direita = MAX_SPEED * 0.9;
+  double velocidade_esquerda = MAX_SPEED * 0.9;
   double radar_infra_valores[12];
 
   // main loop
   while (wb_robot_step(time_step) != -1) {
 
-    for (i = 0; i < 12; ++i)
+    // dados dos sensores
+    double maior_infra = 0.0;
+    for (i = 0; i < 12; ++i) {
       radar_infra_valores[i] = wb_distance_sensor_get_value(radar_infra[i]);
+      if (maior_infra < radar_infra_valores[i]) { maior_infra = i; }
+    }
 
+    if (strcmp(radar_infra_nomes[maior_infra], "front ultrasonic sensor") == 0) {
+      velocidade_direita = MAX_SPEED * 0.9;
+      velocidade_esquerda = MAX_SPEED * 0.9;
+    } else if (strcmp(radar_infra_nomes[maior_infra], "rear left infrared sensor") == 0) {
+      velocidade_direita = MAX_SPEED * 0.9;
+      velocidade_esquerda = MAX_SPEED * -0.4;
+    } else if (strcmp(radar_infra_nomes[maior_infra], "left infrared sensor") == 0) {
+      velocidade_direita = MAX_SPEED * 0.9;
+      velocidade_esquerda = MAX_SPEED * 0.1;
+    } else if (strcmp(radar_infra_nomes[maior_infra], "front left infrared sensor") == 0) {
+      velocidade_direita = MAX_SPEED * 0.9;
+      velocidade_esquerda = MAX_SPEED * 0.4;
+    } else if (strcmp(radar_infra_nomes[maior_infra], "front right infrared sensor") == 0) {
+      velocidade_direita = MAX_SPEED * 0.4;
+      velocidade_esquerda = MAX_SPEED * 0.9;
+    } else if (strcmp(radar_infra_nomes[maior_infra], "right infrared sensor") == 0) {
+      velocidade_direita = MAX_SPEED * 0.1;
+      velocidade_esquerda = MAX_SPEED * 0.9;
+    } else if (strcmp(radar_infra_nomes[maior_infra], "rear right infrared sensor") == 0) {
+      velocidade_direita = MAX_SPEED * -0.4;
+      velocidade_esquerda = MAX_SPEED * 0.9;
+    } else if (strcmp(radar_infra_nomes[maior_infra], "rear infrared sensor") == 0) {
+      velocidade_direita = MAX_SPEED * -0.5;
+      velocidade_esquerda = MAX_SPEED * 0.9;
+    }
+    
     // print values
     printf("time = %f [s]\n", wb_robot_get_time())
     for (i = 0; i < 12; ++i)
       printf("%f - %s\n", radar_infra_valores[i], radar_infra_nomes[i]);
+
+    wb_motor_set_velocity(motor_esquerdo, velocidade_esquerda);
+    wb_motor_set_velocity(motor_direito, velocidade_direita);
 
   };
 
