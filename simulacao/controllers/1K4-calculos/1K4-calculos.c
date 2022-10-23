@@ -95,33 +95,34 @@ int main(int argc, char **argv) {
       printf("Sem visão (%d)\n", tolerancia);
       i_menor_distancia = ultimo_i_distancia;
       if (
-        strcmp(radar_som_nomes[i_menor_distancia], "left ultrasonic sensor") == 0
-        || strcmp(radar_som_nomes[i_menor_distancia], "right ultrasonic sensor")
+        strcmp(radar_som_nomes[i_menor_distancia], "front right ultrasonic sensor") == 0
+        || strcmp(radar_som_nomes[i_menor_distancia], "front right ultrasonic sensor")
       ) { coeficiente_de_giro = 0; }
     }
 
     ultimo_i_distancia = i_menor_distancia;
     printf("coeficiente de giro: %f\n", coeficiente_de_giro);
+    printf("menor distancia: %f\n", menor_distancia);
 
     if (strcmp(radar_som_nomes[i_menor_distancia], "front left ultrasonic sensor") == 0) {
-      printf("Virando para direita\n");
+      printf("Virando para esquerda\n");
       velocidade_direita = MAX_SPEED * 0.9;
-      velocidade_esquerda = MAX_SPEED * coeficiente_de_giro;
+      velocidade_esquerda = MAX_SPEED * 0.5;
     } else if (strcmp(radar_som_nomes[i_menor_distancia], "left ultrasonic sensor") == 0) {
-      printf("Rodando para direita\n");
-      velocidade_direita = MAX_SPEED * 0.9;
-      velocidade_esquerda = MAX_SPEED * -0.1;
+      printf("Rodando para esquerda\n");
+      velocidade_direita = MAX_SPEED * 0.2;
+      velocidade_esquerda = MAX_SPEED * 0.5;
     } else if (strcmp(radar_som_nomes[i_menor_distancia], "front ultrasonic sensor") == 0) {
       printf("Indo pra frente\n");
-      velocidade_direita = MAX_SPEED * 0.9;
-      velocidade_esquerda = MAX_SPEED * 0.9;
+      velocidade_direita = MAX_SPEED * 1;
+      velocidade_esquerda = MAX_SPEED * 1;
     } else if (strcmp(radar_som_nomes[i_menor_distancia], "right ultrasonic sensor") == 0) {
-      printf("Rodando para esquerda\n");
+      printf("Rodando para direita\n");
       velocidade_direita = MAX_SPEED * -0.1;
       velocidade_esquerda = MAX_SPEED * 0.9;
     } else if (strcmp(radar_som_nomes[i_menor_distancia], "front right ultrasonic sensor") == 0) {
-      printf("Virando para esquerda\n");
-      velocidade_direita = MAX_SPEED * coeficiente_de_giro;
+      printf("Virando para direita\n");
+      velocidade_direita = MAX_SPEED * 0.5;
       velocidade_esquerda = MAX_SPEED * 0.9;
     }
      
@@ -129,10 +130,11 @@ int main(int argc, char **argv) {
       printf("%f - %s\n", radar_som_valores[i], radar_som_nomes[i]);
 
     printf("%f - esquerda\n", velocidade_esquerda);
-    printf("%f - direita\n\n", velocidade_direita);
+    printf("%f - direita\n", velocidade_direita);
     wb_motor_set_velocity(motor_esquerdo, velocidade_esquerda);
     wb_motor_set_velocity(motor_direito, velocidade_direita);
 
+    printf("--------------\n");
   };
 
   wb_robot_cleanup();
