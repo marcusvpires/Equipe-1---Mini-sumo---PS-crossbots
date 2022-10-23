@@ -70,52 +70,66 @@ int main(int argc, char **argv) {
   wb_motor_set_velocity(motor_esquerdo, 0.0);
   wb_motor_set_velocity(motor_direito, 0.0);
 
-  int last_display_second = 0;
   double velocidade_direita = MAX_SPEED * 0.9;
   double velocidade_esquerda = MAX_SPEED * 0.9;
-  double radar_infra_valores[12];
+  double radar_som_valores[10];
+  int ultimo_i_distancia = 0;
+  int tolerancia = 0;
 
   // main loop
   while (wb_robot_step(time_step) != -1) {
 
     // dados dos sensores
-    double maior_infra = 0.0;
-    for (i = 0; i < 12; ++i) {
-      radar_infra_valores[i] = wb_distance_sensor_get_value(radar_infra[i]);
-      if (maior_infra < radar_infra_valores[i]) { maior_infra = i; }
+    double menor_distancia = 1.8;
+    int i_menor_distancia = -1;
+    for (i = 0; i < 5; ++i) {
+      radar_som_valores[i] = wb_distance_sensor_get_value(radar_som[i]);
+      if (menor_distancia > radar_som_valores[i]) { 
+        i_menor_distancia = i;
+        menor_distancia = radar_som_valores[i];
+      }
     }
 
-    if (strcmp(radar_infra_nomes[maior_infra], "front ultrasonic sensor") == 0) {
+    double coeficiente_de_giro = menor_distancia;
+    if (i_menor_distancia == -1) {
+      printf("Sem visão (%d)\n", tolerancia);
+      i_menor_distancia = ultimo_i_distancia;
+      if (
+        strcmp(radar_som_nomes[i_menor_distancia], "left ultrasonic sensor") == 0
+        || strcmp(radar_som_nomes[i_menor_distancia], "right ultrasonic sensor")
+      ) { coeficiente_de_giro = 0; }
+    }
+
+    ultimo_i_distancia = i_menor_distancia;
+    printf("coeficiente de giro: %f\n", coeficiente_de_giro);
+
+    if (strcmp(radar_som_nomes[i_menor_distancia], "front left ultrasonic sensor") == 0) {
+      printf("Virando para direita\n");
+      velocidade_direita = MAX_SPEED * 0.9;
+      velocidade_esquerda = MAX_SPEED * coeficiente_de_giro;
+    } else if (strcmp(radar_som_nomes[i_menor_distancia], "left ultrasonic sensor") == 0) {
+      printf("Rodando para direita\n");
+      velocidade_direita = MAX_SPEED * 0.9;
+      velocidade_esquerda = MAX_SPEED * -0.1;
+    } else if (strcmp(radar_som_nomes[i_menor_distancia], "front ultrasonic sensor") == 0) {
+      printf("Indo pra frente\n");
       velocidade_direita = MAX_SPEED * 0.9;
       velocidade_esquerda = MAX_SPEED * 0.9;
-    } else if (strcmp(radar_infra_nomes[maior_infra], "rear left infrared sensor") == 0) {
-      velocidade_direita = MAX_SPEED * 0.9;
-      velocidade_esquerda = MAX_SPEED * -0.4;
-    } else if (strcmp(radar_infra_nomes[maior_infra], "left infrared sensor") == 0) {
-      velocidade_direita = MAX_SPEED * 0.9;
-      velocidade_esquerda = MAX_SPEED * 0.1;
-    } else if (strcmp(radar_infra_nomes[maior_infra], "front left infrared sensor") == 0) {
-      velocidade_direita = MAX_SPEED * 0.9;
-      velocidade_esquerda = MAX_SPEED * 0.4;
-    } else if (strcmp(radar_infra_nomes[maior_infra], "front right infrared sensor") == 0) {
-      velocidade_direita = MAX_SPEED * 0.4;
+    } else if (strcmp(radar_som_nomes[i_menor_distancia], "right ultrasonic sensor") == 0) {
+      printf("Rodando para esquerda\n");
+      velocidade_direita = MAX_SPEED * -0.1;
       velocidade_esquerda = MAX_SPEED * 0.9;
-    } else if (strcmp(radar_infra_nomes[maior_infra], "right infrared sensor") == 0) {
-      velocidade_direita = MAX_SPEED * 0.1;
-      velocidade_esquerda = MAX_SPEED * 0.9;
-    } else if (strcmp(radar_infra_nomes[maior_infra], "rear right infrared sensor") == 0) {
-      velocidade_direita = MAX_SPEED * -0.4;
-      velocidade_esquerda = MAX_SPEED * 0.9;
-    } else if (strcmp(radar_infra_nomes[maior_infra], "rear infrared sensor") == 0) {
-      velocidade_direita = MAX_SPEED * -0.5;
+    } else if (strcmp(radar_som_nomes[i_menor_distancia], "front right ultrasonic sensor") == 0) {
+      printf("Virando para esquerda\n");
+      velocidade_direita = MAX_SPEED * coeficiente_de_giro;
       velocidade_esquerda = MAX_SPEED * 0.9;
     }
-    
-    // print values
-    printf("time = %f [s]\n", wb_robot_get_time())
-    for (i = 0; i < 12; ++i)
-      printf("%f - %s\n", radar_infra_valores[i], radar_infra_nomes[i]);
+     
+    for (i = 0; i < 5; ++i)
+      printf("%f - %s\n", radar_som_valores[i], radar_som_nomes[i]);
 
+    printf("%f - esquerda\n", velocidade_esquerda);
+    printf("%f - direita\n\n", velocidade_direita);
     wb_motor_set_velocity(motor_esquerdo, velocidade_esquerda);
     wb_motor_set_velocity(motor_direito, velocidade_direita);
 
