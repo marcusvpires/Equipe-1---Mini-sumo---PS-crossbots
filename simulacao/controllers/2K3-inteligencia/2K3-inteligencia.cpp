@@ -55,6 +55,7 @@ int main()
     
     teste de aceleração: 
     não foi verificado nenhuma mudança mais o sistema crachou bastante nos testes, principalmente em a partir de 100
+    !! quando foi colocado dois carros, um ao lado do outro, sendo um com o método de aceleração calibrado em 100 e outro sem nada, o carro com o método de aceleração adquiriu uma vantagem considerável
       0020 - 3.104
       0030 - 3.104
       0040 - 3.104
@@ -65,6 +66,10 @@ int main()
       0200 - 3.104
       1000 - 3.104
     método de aceleração:
+      if (maior_infrav == 0 && concluido) { // finaliza o tempo quando sai da arena
+        std::cout << "tempo: " << time << "\n";
+        concluido = 0;
+      }
       float aceleracao = 1000;
       for (float i = 0; i <= aceleracao; i++)
       {
