@@ -5,7 +5,11 @@
 ### senssor ultrassônico:
 
 - Margem de erro = A140 [ +-70 ]
-- Ponto mais longe possível = 1035 [ +- 165 ] ( valor máximo 1200 )
+- Ponto mais longe possível = 1035 [ +- 165 ] ( 870 / 1200 )
+
+> Radar
+
+Velocidade máxima de giro para receber o sinal = 4.0 // -4.0
 
 ###  senssor infra:
 
