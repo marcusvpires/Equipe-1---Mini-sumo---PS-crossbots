@@ -90,6 +90,20 @@ int main(int argc, char **argv) {
       }
     }
 
+    // dados dos sensores
+    double menor_distancia = 1.8;
+    int i_menor_distancia = -1;
+    for (i = 0; i < 5; ++i) {
+      radar_som_valores[i] = wb_distance_sensor_get_value(radar_som[i]);
+      if (menor_distancia > radar_som_valores[i]) { 
+        i_menor_distancia = i;
+        menor_distancia = radar_som_valores[i];
+      }
+    }
+
+
+    // executando tarefas
+
     double coeficiente_de_giro = menor_distancia;
     if (i_menor_distancia == -1) {
       printf("Sem visão (%d)\n", tolerancia);

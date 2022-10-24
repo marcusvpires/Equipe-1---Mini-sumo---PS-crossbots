@@ -3,13 +3,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.8902082155355352 -0.4396786818950209 -0.11921404984352744 5.691879894072786
-  position 0.4585320859622175 1.4713249290283092 0.44189465946512785
-}
-Khepera3 {
-  translation 0.344762 0.496396 -0.892246
-  rotation 0.0032750886470136733 0.9999435869088913 -0.010104295825769754 -0.10355530717958583
-  controller "1K3-bate-volta"
+  orientation 0.7117251783626641 0.6891756615597343 0.13595652981131995 5.742406529294528
+  position -0.9489047589575161 1.1865410895128903 2.433248859154156
 }
 TexturedBackground {
 }
@@ -17,7 +12,6 @@ TexturedBackgroundLight {
   castShadows FALSE
 }
 CircleArena {
-  translation 0 0.5 -1
   radius 0.5
   floorAppearance PBRAppearance {
     baseColor 0 0 0
@@ -35,8 +29,12 @@ CircleArena {
     metalness 0
   }
 }
-Khepera4 {
-  translation -0.347631 0.5 -0.81626
-  rotation 0 1 0 -1.8325953071795862
-  controller "1K4-calculos"
+Khepera3 {
+  translation 0 0 0.4
+  name "fog"
+  controller "2K3-inteligencia"
+}
+WoodenBox {
+  translation 0 0.05 -0.4
+  size 0.1 0.1 0.1
 }
