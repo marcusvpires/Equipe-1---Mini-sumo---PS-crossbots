@@ -37,8 +37,8 @@ int main()
   us03->enable(TIME_STEP);
   
   // Definição de variáveis
-  double maior = 0.0;
-  double menor = 5000.0;
+  double maior_usv = 0.0;
+  std::string maior_usn = "";
 
   // Dados coletados
   /*
@@ -54,6 +54,20 @@ int main()
     const double usv02 = us02->getValue();
     const double usv03 = us03->getValue();
 
+    if (usv01 > usv02 && usv01 > usv03) {
+      maior_usv = usv01;
+      maior_usn = "usv01";
+    } else if (usv02 > usv03) {
+      maior_usv = usv02;
+      maior_usn = "usv02";
+    } else {
+      maior_usv = usv03;
+      maior_usn = "usv03";
+    }
+
+    std::cout << maior_usn << " " << maior_usv << "\n";
+    roda_direita->setVelocity(0.4);
+    roda_esquerda->setVelocity(-0.4);
     
   }
   
