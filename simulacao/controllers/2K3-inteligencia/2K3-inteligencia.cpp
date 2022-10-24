@@ -39,20 +39,56 @@ int main()
   // Definição de variáveis
   double maior_usv = 0.0;
   std::string maior_usn = "";
+  double maior_infrav = 0.0;
+  std::string maior_infran = "";
+  int concluido = 1;
 
   // Dados coletados
   /*
-    Tolerância dos sensores = A140 [ +-70 ]
-    Ponto mais longe possível = +- 870-1200 
+    senssor ultrassônico:
+      tolerância = A140 [ +-70 ]
+      Ponto mais longe possível = +- 870-1200
+
+    senssor infra:
+      máximo preto = 3577.16
+      máximo branco = 4123.74
+    
+    teste de aceleração: 
+    não foi verificado nenhuma mudança mais o sistema crachou bastante nos testes, principalmente em a partir de 100
+      0020 - 3.104
+      0030 - 3.104
+      0040 - 3.104
+      0050 - 3.104
+      0060 - 3.104
+      0070 - 3.104
+      0100 - 3.104
+      0200 - 3.104
+      1000 - 3.104
+    método de aceleração:
+      float aceleracao = 1000;
+      for (float i = 0; i <= aceleracao; i++)
+      {
+        float velocidade = MAX_SPEED * i / aceleracao;
+        roda_direita->setVelocity(velocidade);
+        roda_esquerda->setVelocity(velocidade);
+        if (concluido) {
+          std::cout << i << " - Velocidade: " << velocidade << "\n";
+        }
+      }
   */
   
   //-------------------------------------------------------//
   
-  while(robot->step(TIME_STEP) != -1) //Insira dentro desse laço while o código que rodará continuamente (estilo loop do arduino)
+  while(robot->step(TIME_STEP) != -1)
   {
     const double usv01 = us01->getValue();
     const double usv02 = us02->getValue();
     const double usv03 = us03->getValue();
+
+    const double infravL = infraL->getValue();
+    const double infravR = infraR->getValue();
+
+    const float time = float(robot->getTime());
 
     if (usv01 > usv02 && usv01 > usv03) {
       maior_usv = usv01;
@@ -65,9 +101,31 @@ int main()
       maior_usn = "usv03";
     }
 
-    std::cout << maior_usn << " " << maior_usv << "\n";
-    roda_direita->setVelocity(0.4);
-    roda_esquerda->setVelocity(-0.4);
+    if (infravL > infravR) {
+      maior_infrav = infravL;
+      maior_infran = "infravL";
+    } else {
+      maior_infrav = infravR;
+      maior_infran = "infravR";
+    }
+
+    if (maior_infrav == 0 && concluido) {
+      std::cout << "tempo: " << time << "\n";
+      concluido = 0;
+    }
+
+    // Aceleração
+    float aceleracao = 1000;
+    for (float i = 0; i <= aceleracao; i++)
+    {
+      float velocidade = MAX_SPEED * i / aceleracao;
+      roda_direita->setVelocity(velocidade);
+      roda_esquerda->setVelocity(velocidade);
+      if (concluido) {
+        std::cout << i << " - Velocidade: " << velocidade << "\n";
+      }
+    }
+    
     
   }
   
