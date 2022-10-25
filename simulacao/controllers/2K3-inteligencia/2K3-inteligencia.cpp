@@ -41,14 +41,21 @@ int main()
   // std::string maior_infran = "";
   // int concluido = 1;
 
+  std::string tarefa = "radar";
+  float tempo_inicio_tarefa = 0;
+  float tempo_tolerancia = 0;
+
   //-------------------------------------------------------//
   
   while(robot->step(TIME_STEP) != -1) {
+
+    const float tempo = float(robot->getTime());
 
     // valores do senssor ultrassônico
     double usv[5];
     for (int i = 0; i < 5; i++) {
       usv[i] = _us[i]->getValue();
+      std::cout << usv[i] << " - " << usn[i] << "\n";
     }
     // Definição de variáveis
     double m_usv = 1500.0;
@@ -63,18 +70,49 @@ int main()
     }
 
     // Verifica se a menor distância está dentro da arena
-    if (m_usv < 1200 && m_usv > 1)
+    if (m_usv < 1200 && m_usv > 1) {
+      if (m_usn == "us3") {
+        std::cout << "girar_us2_centro iniciado" << "\n";
+        tarefa = "girar_us3_centro";
+        tempo_inicio_tarefa = tempo;
+      }
       std::cout << m_usn << " >> " << m_usv << "\n";
+    }
 
-    roda_direita ->setVelocity(7);
-    roda_esquerda->setVelocity(-7);
+    if (tarefa == "radar") {
+      std::cout << "radar" << "\n";
+      roda_direita ->setVelocity(7);
+      roda_esquerda->setVelocity(-7);
+    } else if (tarefa == "seguir") {
+      std::cout << "seguir" << "\n";
+      roda_direita ->setVelocity(MAX_SPEED*0.9);
+      roda_esquerda->setVelocity(MAX_SPEED*0.9);  
+      if (m_usn == "us2") {
+        tempo_tolerancia = tempo;
+      } else if ((tempo - tempo_tolerancia) > 1.5) {
+        std::cout << "iniciando radar" << "\n";
+        tarefa = "radar";
+        tempo_inicio_tarefa = tempo;
+      }
+    } else if (tarefa == "girar_us3_centro") {
+      if ((tempo - tempo_inicio_tarefa) > 0.18) {
+        std::cout << "girar_us2_centro concluido" << "\n";
+        tarefa = "radar";
+        tempo_inicio_tarefa = tempo;
+      } else if (m_usn == "us2") {
+        tarefa = "seguir";
+        tempo_inicio_tarefa = tempo;
+        tempo_tolerancia = tempo;
+      } else {
+        roda_direita ->setVelocity(-MAX_SPEED*0.9);
+        roda_esquerda->setVelocity(MAX_SPEED*0.9);
+      }
+    }
     
     /*
     const double infravL = infraL->getValue();
     const double infravR = infraR->getValue();
     */
-
-    // const float time = float(robot->getTime());
 
     /* 
     if (infravL > infravR) {
@@ -85,6 +123,8 @@ int main()
       maior_infran = "infravR";
     }
     */
+
+    std::cout << "-----------------------------------------------" << "\n";
     
   }
   
