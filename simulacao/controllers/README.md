@@ -9,7 +9,48 @@
 
 > Radar
 
-Velocidade máxima de giro para receber o sinal = 4.0 // -4.0
+Velocidade recomendada de giro = 7.0 // -7.0
+
+```
+  DistanceSensor *_us[5];
+  char usn[5][8] = { "us0", "us1", "us2", "us3", "us4" };
+  for (int i = 0; i < 5; i++) {
+    _us[i] = robot->getDistanceSensor(usn[i]); 
+    _us[i]->enable(TIME_STEP);
+  }
+
+  ---------------------fora de main----------------------
+
+  int radar(DistanceSensor *_us[5], ) {
+    // valores do senssor ultrassônico
+    double usv[5];
+    for (int i = 0; i < 5; i++) {
+      usv[i] = _us[i]->getValue();
+    }
+    // Definição de variáveis
+    double m_usv = 1500.0;
+    std::string m_usn = "";
+    // encontra a menor distância
+    for (int i = 0; i < 5; i++) {
+      if (usv[i] < m_usv && usv[i] > 1) {
+        m_usv = usv[i];
+        m_usn = usn[i];
+      }
+      // std::cout << usn[i] << " - " << usv[i] << "\n";
+    }
+    // Verifica se a menor distância está dentro da arena
+    if (m_usv < 1200 && m_usv > 1)
+      std::cout << m_usn << " >> " << m_usv << "\n";
+  }
+
+  ---------------------dentro do while----------------------
+
+  radar(_us, usn);
+
+  roda_direita->setVelocity(7);
+  roda_esquerda->setVelocity(-7);
+
+```
 
 ###  senssor infra:
 

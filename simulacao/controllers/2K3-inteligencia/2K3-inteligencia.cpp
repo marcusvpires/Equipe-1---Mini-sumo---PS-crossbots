@@ -29,44 +29,54 @@ int main()
   infraR->enable(TIME_STEP);
   
   // Definição dos sensores ultrassônicos
-  DistanceSensor *us01 = robot->getDistanceSensor("us1"); //Sensor ultrassônico lateral esquerdo
-  DistanceSensor *us02 = robot->getDistanceSensor("us2"); //Sensor ultrassônico frontal
-  DistanceSensor *us03 = robot->getDistanceSensor("us3"); //Sensor ultrassônico lateral direito
-  us01->enable(TIME_STEP);
-  us02->enable(TIME_STEP);
-  us03->enable(TIME_STEP);
+  DistanceSensor *_us[5];
+  char usn[5][8] = { "us0", "us1", "us2", "us3", "us4" };
+  for (int i = 0; i < 5; i++) {
+    _us[i] = robot->getDistanceSensor(usn[i]); 
+    _us[i]->enable(TIME_STEP);
+  }
   
   // Definição de variáveis
-  double maior_usv = 0.0;
-  std::string maior_usn = "";
-  double maior_infrav = 0.0;
-  std::string maior_infran = "";
-  int concluido = 1;
+  // double maior_infrav = 0.0;
+  // std::string maior_infran = "";
+  // int concluido = 1;
 
   //-------------------------------------------------------//
   
-  while(robot->step(TIME_STEP) != -1)
-  {
-    const double usv01 = us01->getValue();
-    const double usv02 = us02->getValue();
-    const double usv03 = us03->getValue();
+  while(robot->step(TIME_STEP) != -1) {
 
-    const double infravL = infraL->getValue();
-    const double infravR = infraR->getValue();
-
-    const float time = float(robot->getTime());
-
-    if (usv01 > usv02 && usv01 > usv03) {
-      maior_usv = usv01;
-      maior_usn = "usv01";
-    } else if (usv02 > usv03) {
-      maior_usv = usv02;
-      maior_usn = "usv02";
-    } else {
-      maior_usv = usv03;
-      maior_usn = "usv03";
+    // valores do senssor ultrassônico
+    double usv[5];
+    for (int i = 0; i < 5; i++) {
+      usv[i] = _us[i]->getValue();
+    }
+    // Definição de variáveis
+    double m_usv = 1500.0;
+    std::string m_usn = "";
+    // encontra a menor distância
+    for (int i = 0; i < 5; i++) {
+      if (usv[i] < m_usv && usv[i] > 1) {
+        m_usv = usv[i];
+        m_usn = usn[i];
+      }
+      // std::cout << usn[i] << " - " << usv[i] << "\n";
     }
 
+    // Verifica se a menor distância está dentro da arena
+    if (m_usv < 1200 && m_usv > 1)
+      std::cout << m_usn << " >> " << m_usv << "\n";
+
+    roda_direita ->setVelocity(7);
+    roda_esquerda->setVelocity(-7);
+    
+    /*
+    const double infravL = infraL->getValue();
+    const double infravR = infraR->getValue();
+    */
+
+    // const float time = float(robot->getTime());
+
+    /* 
     if (infravL > infravR) {
       maior_infrav = infravL;
       maior_infran = "infravL";
@@ -74,13 +84,7 @@ int main()
       maior_infrav = infravR;
       maior_infran = "infravR";
     }
-
-    if (maior_usv && 10 < maior_usv && maior_usv < 870 ) {
-      std::cout << "localizado: " << maior_usv << " - " <<  maior_usn << "\n";
-    }
-
-    roda_direita->setVelocity(4);
-    roda_esquerda->setVelocity(-4);
+    */
     
   }
   
