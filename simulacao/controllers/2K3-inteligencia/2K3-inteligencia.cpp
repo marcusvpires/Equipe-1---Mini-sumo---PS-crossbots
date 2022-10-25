@@ -71,9 +71,21 @@ int main()
 
     // Verifica se a menor distância está dentro da arena
     if (m_usv < 1200 && m_usv > 1) {
-      if (m_usn == "us3") {
+       if (m_usn == "us3") {
         std::cout << "girar_us2_centro iniciado" << "\n";
         tarefa = "girar_us3_centro";
+        tempo_inicio_tarefa = tempo;
+      } else if (m_usn == "us1") {
+        std::cout << "girar_us1_centro iniciado" << "\n";
+        tarefa = "girar_us1_centro";
+        tempo_inicio_tarefa = tempo;
+      } else if (m_usn == "us4") {
+        std::cout << "girar_us4_centro iniciado" << "\n";
+        tarefa = "girar_us4_centro";
+        tempo_inicio_tarefa = tempo;
+      } else if (m_usn == "us0") {
+        std::cout << "girar_us0_centro iniciado" << "\n";
+        tarefa = "girar_us0_centro";
         tempo_inicio_tarefa = tempo;
       }
       std::cout << m_usn << " >> " << m_usv << "\n";
@@ -95,14 +107,53 @@ int main()
         tempo_inicio_tarefa = tempo;
       }
     } else if (tarefa == "girar_us3_centro") {
-      if ((tempo - tempo_inicio_tarefa) > 0.18) {
-        std::cout << "girar_us2_centro concluido" << "\n";
-        tarefa = "radar";
-        tempo_inicio_tarefa = tempo;
-      } else if (m_usn == "us2") {
+      if (m_usn == "us2") {
         tarefa = "seguir";
         tempo_inicio_tarefa = tempo;
         tempo_tolerancia = tempo;
+      } else if ((tempo - tempo_inicio_tarefa) > 0.18) {
+        std::cout << "girar_us2_centro concluido" << "\n";
+        tarefa = "radar";
+        tempo_inicio_tarefa = tempo;
+      } else {
+        roda_direita ->setVelocity(-MAX_SPEED*0.9);
+        roda_esquerda->setVelocity(MAX_SPEED*0.9);
+      }
+    } else if (tarefa == "girar_us1_centro") {
+      if (m_usn == "us2") {
+        tarefa = "seguir";
+        tempo_inicio_tarefa = tempo;
+        tempo_tolerancia = tempo;
+      } else if ((tempo - tempo_inicio_tarefa) > 0.18) {
+        std::cout << "girar_us1_centro concluido" << "\n";
+        tarefa = "radar";
+        tempo_inicio_tarefa = tempo;
+      } else {
+        roda_direita ->setVelocity(MAX_SPEED*0.9);
+        roda_esquerda->setVelocity(-MAX_SPEED*0.9);
+      }
+    } else if (tarefa == "girar_us4_centro") {
+      if (m_usn == "us2") {
+        tarefa = "seguir";
+        tempo_inicio_tarefa = tempo;
+        tempo_tolerancia = tempo;
+      } else if ((tempo - tempo_inicio_tarefa) > 0.58) {
+        std::cout << "girar_us4_centro concluido" << "\n";
+        tarefa = "radar";
+        tempo_inicio_tarefa = tempo;
+      } else {
+        roda_direita ->setVelocity(-MAX_SPEED*0.9);
+        roda_esquerda->setVelocity(MAX_SPEED*0.9);
+      }
+    } else if (tarefa == "girar_us0_centro") {
+      if (m_usn == "us2") {
+        tarefa = "seguir";
+        tempo_inicio_tarefa = tempo;
+        tempo_tolerancia = tempo;
+      } else if ((tempo - tempo_inicio_tarefa) > 0.58) {
+        std::cout << "girar_us0_centro concluido" << "\n";
+        tarefa = "radar";
+        tempo_inicio_tarefa = tempo;
       } else {
         roda_direita ->setVelocity(-MAX_SPEED*0.9);
         roda_esquerda->setVelocity(MAX_SPEED*0.9);
