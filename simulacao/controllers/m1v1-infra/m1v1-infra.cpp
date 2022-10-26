@@ -43,6 +43,7 @@ int main()
   // int concluido = 1;
 
   std::string tarefa = "radar";
+  std::string etapa_tarefa = "";
   float tempo_inicio_tarefa = 0;
   float tempo_tolerancia = 0;
   std::string tarefa_2 = "";
@@ -77,16 +78,9 @@ int main()
       // std::cout << usn[i] << " - " << usv[i] << "\n";
     }
 
-    /* ----------------------------- detectar linha ----------------------------- */
-    double M_infrav = 0;
-    std::string M_infran = "";
-    if (infraLv > infraRv) {
-      M_infrav = infraLv;
-      M_infran = "infraR";
-    } else {
-      M_infrav = infraRv;
-      M_infran = "infraL";
-    }
+    /* -------------------------------------------------------------------------- */
+    /*                            definição de tarefas                            */
+    /* -------------------------------------------------------------------------- */
 
     /* --------------------------------- ataque --------------------------------- */
     bool is_tarefa_de_ataque = false;
@@ -108,11 +102,45 @@ int main()
       }
     }
 
+    /* ----------------------------- detectar linha ----------------------------- */
+    double M_infrav = 0;
+    std::string M_infran = "";
+    // define o maior valor
+    if (infraLv > infraRv) {
+      M_infrav = infraLv;
+      M_infran = "infraR";
+    } else {
+      M_infrav = infraRv;
+      M_infran = "infraL";
+    }
+    if (M_infrav > 4000) {
+      tarefa = "voltar_para_arena";
+      tempo_inicio_tarefa = tempo;
+      tempo_tolerancia = tempo;
+    }
+
     // printa a tarefa a cada meio segundo
-    if (tempo_int % 20 == 0) {
+    if (tempo_int % 3 == 0) {
       std::cout << "tarefa:" << tarefa << " // tempo (s) : " << tempo - tempo_inicio_tarefa << " // us: " << m_usn << " - " << m_usv << "\n";
     }
 
+    /* -------------------------------------------------------------------------- */
+    /*                             execução de tarefas                            */
+    /* -------------------------------------------------------------------------- */
+
+    // voltar_para_arena
+    if (tarefa == "voltar_para_arena") {
+      if (tempo - tempo_inicio_tarefa < 2) {
+        roda_direita ->setVelocity(-9);
+        roda_esquerda->setVelocity(-9);
+      } else if (tempo - tempo_inicio_tarefa < 1.8) {
+        roda_direita ->setVelocity(9);
+        roda_esquerda->setVelocity(-9);
+      } else {
+        tarefa = "radar";
+        tempo_inicio_tarefa = tempo;
+      }
+    }
     // radar >> roda buscando um valor dentro da arena de um usv
     if (tarefa == "radar") {
       roda_direita ->setVelocity(7);
