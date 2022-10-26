@@ -91,7 +91,7 @@ int main()
     }
 
     // printa a tarefa a cada meio segundo
-    if (tempo_int % 50 == 0) {
+    if (tempo_int % 2 == 0) {
       std::cout << "tarefa:" << tarefa << " // tempo (s) : " << tempo - tempo_inicio_tarefa << " // us: " << m_usn << " - " << m_usv << "\n";
     }
 

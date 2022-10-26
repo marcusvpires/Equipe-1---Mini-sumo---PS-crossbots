@@ -45,6 +45,9 @@ int main()
   std::string tarefa = "radar";
   float tempo_inicio_tarefa = 0;
   float tempo_tolerancia = 0;
+  std::string tarefa_2 = "";
+  float tempo_inicio_tarefa_2 = 0;
+  float tempo_tolerancia_2 = 0;
 
   //-------------------------------------------------------//
   
@@ -52,6 +55,10 @@ int main()
 
     const float tempo = float(robot->getTime());
     const int tempo_int = static_cast<int>(tempo * 10);
+
+    // valores do senssor infra
+    const double infraRv = infraR->getValue();
+    const double infraLv = infraL->getValue();
 
     // valores do senssor ultrassônico
     double usv[5];
@@ -70,7 +77,18 @@ int main()
       // std::cout << usn[i] << " - " << usv[i] << "\n";
     }
 
-    // ----------------------- ataque ----------------------- //
+    /* ----------------------------- detectar linha ----------------------------- */
+    double M_infrav = 0;
+    std::string M_infran = "";
+    if (infraLv > infraRv) {
+      M_infrav = infraLv;
+      M_infran = "infraR";
+    } else {
+      M_infrav = infraRv;
+      M_infran = "infraL";
+    }
+
+    /* --------------------------------- ataque --------------------------------- */
     bool is_tarefa_de_ataque = false;
     // define a terefa dependendo do valor da menor distância
     if (m_usv < 1450 && m_usv > 1) {
@@ -91,7 +109,7 @@ int main()
     }
 
     // printa a tarefa a cada meio segundo
-    if (tempo_int % 50 == 0) {
+    if (tempo_int % 20 == 0) {
       std::cout << "tarefa:" << tarefa << " // tempo (s) : " << tempo - tempo_inicio_tarefa << " // us: " << m_usn << " - " << m_usv << "\n";
     }
 
