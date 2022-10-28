@@ -16,7 +16,7 @@ int main()
   wb_robot_init();
 
   int num = 0, tarefa = 0;
-
+  // Oi testes de commit! - Amora
   //Definindo os motores
   WbDeviceTag roda_esquerda, roda_direita;
   roda_esquerda = wb_robot_get_device("left wheel motor"); //Motor esquerdo
