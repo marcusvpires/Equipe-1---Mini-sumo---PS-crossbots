@@ -7,17 +7,77 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.08621384360687298 -0.9764174517862765 -0.1979296163228846 2.337332634865713
-  position -0.2901801363074328 0.18601813109629728 -0.28736744998110875
+  orientation -0.06167733978349662 0.9869644153177413 0.14865109704855822 2.3642461903412766
+  position 0.36764639149981054 0.22695428899533227 -0.41207985111998746
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
-RectangleArena {
-}
 Robot {
   children [
+    DistanceSensor {
+      translation 0.04 0.01 -0.07
+      rotation 0.5816878392534963 -0.5816888392532199 0.5685748428772068 -2.1076153071795867
+      children [
+        DEF SENSOR Transform {
+          rotation 0 0 1 1.57
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.975691 0.981481 0.0252992
+                roughness 1
+                metalness 0
+              }
+              geometry Cylinder {
+                height 0.004
+                radius 0.008
+              }
+            }
+          ]
+        }
+      ]
+      name "right_ground_infrared"
+      lookupTable [
+        0 1024 0
+        0.05 1024 0
+        0.15 0 0
+      ]
+      type "infra-red"
+      numberOfRays 2
+      aperture 1
+    }
+    DistanceSensor {
+      translation -0.04 0.01 -0.07
+      rotation -0.5816871699850122 0.5816901699858891 -0.5685741661530315 2.10762
+      children [
+        DEF SENSOR Transform {
+          rotation 0 0 1 1.57
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.975691 0.981481 0.0252992
+                roughness 1
+                metalness 0
+              }
+              geometry Cylinder {
+                height 0.004
+                radius 0.008
+              }
+            }
+          ]
+        }
+      ]
+      name "left_ground_infrared"
+      lookupTable [
+        0 1024 0
+        0.05 1024 0
+        0.15 0 0
+      ]
+      type "infra-red"
+      numberOfRays 2
+      aperture 1
+    }
     DEF WHEELS Transform {
       translation 0 -0.005 0.002
       children [
@@ -165,4 +225,22 @@ Robot {
   name "MyBot"
   boundingObject USE BODY
   controller "1v0-motor-e-sensor-distancia"
+}
+CircleArena {
+  radius 0.5
+  floorAppearance PBRAppearance {
+    baseColor 0 0 0
+    roughness 1
+    metalness 0
+    occlusionMap ImageTexture {
+      url [
+        "textures/parquetry/chequered_parquetry_occlusion.jpg"
+      ]
+    }
+  }
+  wallThickness 0.03
+  wallHeight 0.0001
+  wallAppearance PBRAppearance {
+    metalness 0
+  }
 }
