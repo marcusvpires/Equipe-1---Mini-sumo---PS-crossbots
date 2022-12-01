@@ -76,10 +76,6 @@ int main() {
       right_speed = SPEED;
     }
 
-    if 
-    printf("ir ground right = %f\n", right_ground_ir_value);
-    printf("ir ground left = %f\n", left_ground_ir_value);
-
     wb_motor_set_velocity(left_motor, left_speed);
     wb_motor_set_velocity(right_motor, right_speed);
   }
