@@ -1,0 +1,51 @@
+#VRML_SIM R2021a utf8
+WorldInfo {
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation -0.07104223977759049 0.9703990413172323 0.23082179441720768 2.5611221056908198
+  position 0.6964324519068611 0.5297146294430972 -1.0209123479818198
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+  castShadows FALSE
+}
+CircleArena {
+  radius 0.5
+  floorAppearance PBRAppearance {
+    baseColor 0 0 0
+    roughness 1
+    metalness 0
+    occlusionMap ImageTexture {
+      url [
+        "textures/parquetry/chequered_parquetry_occlusion.jpg"
+      ]
+    }
+  }
+  wallThickness 0.03
+  wallHeight 0.0001
+  wallAppearance PBRAppearance {
+    metalness 0
+  }
+}
+Khepera3 {
+  hidden position_0_0 1.89965846236441e-07
+  hidden position_0_1 1.899658070769274e-07
+  hidden rotation_1 -0.9999999999999999 0 0 1.9082797281243954e-07
+  hidden rotation_2 -1 0 0 1.9082797281243954e-07
+  translation -0.1555604385128793 -0.003517271534234794 -0.20200943900287702
+  rotation -0.0013266917342287805 0.9999989688682844 0.0005496830089140514 0.7853987289785705
+  name "monalisa"
+  controller "m1v1-infra"
+}
+Khepera3 {
+  hidden position_0_0 1.8996579451962455e-07
+  hidden position_0_1 1.899658552804884e-07
+  hidden rotation_1 -1 0 0 1.9082797281243954e-07
+  hidden rotation_2 -1 0 0 1.9082797281243954e-07
+  translation 0.20346506219221133 -0.0035172715342311686 0.09374550136611076
+  rotation 7.240267270303655e-05 0.9999998463768672 0.0005495489924113844 -2.879795347082026
+  name "ignorancia"
+  controller "m1v1-infra"
+}

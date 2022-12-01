@@ -1,0 +1,60 @@
+#VRML_SIM R2021a utf8
+WorldInfo {
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation -0.7000189352602826 -0.6683466473235765 -0.2515675839379848 0.9867075463896151
+  position -0.2323847194674103 0.2749687270916023 0.19181661596885927
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+CircleArena {
+}
+Robot {
+  children [
+    DEF LEFT HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor -0.007 0.014 0.041
+      }
+      device [
+        RotationalMotor {
+          name "right-motor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.04099999999999999 0.014 0.041
+        rotation 0.5773516025189619 0.5773516025189619 -0.5773476025217157 2.0944
+        children [
+          DEF WHEEL Shape {
+            appearance PBRAppearance {
+            }
+            geometry Cylinder {
+              height 0.02
+              radius 0.014
+            }
+          }
+        ]
+        boundingObject USE WHEEL
+      }
+    }
+    DEF BODY Transform {
+      translation 0 0.022 0
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.105882 0.105882 0.160784
+          }
+          geometry Box {
+            size 0.1 0.04 0.1
+          }
+        }
+      ]
+    }
+  ]
+  boundingObject USE BODY
+  physics Physics {
+  }
+  controller "controller"
+}
