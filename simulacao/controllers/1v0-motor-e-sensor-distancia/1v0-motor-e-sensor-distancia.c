@@ -31,12 +31,12 @@ int main() {
   wb_robot_init(); /* necessary to initialize webots stuff */
 
   /* Get and enable the distance sensors. */
-  WbDeviceTag ds0 = wb_robot_get_device("ds0");
-  WbDeviceTag ds1 = wb_robot_get_device("ds1");
+  WbDeviceTag lidar_1 = wb_robot_get_device("lidar 1");
+  WbDeviceTag lidar_2 = wb_robot_get_device("lidar 2");
   WbDeviceTag right_ground_ir = wb_robot_get_device("right_ground_infrared");
   WbDeviceTag left_ground_ir = wb_robot_get_device("left_ground_infrared");
-  wb_distance_sensor_enable(ds0, TIME_STEP);
-  wb_distance_sensor_enable(ds1, TIME_STEP);
+  wb_distance_sensor_enable(lidar_1, TIME_STEP);
+  wb_distance_sensor_enable(lidar_2, TIME_STEP);
   wb_distance_sensor_enable(right_ground_ir, TIME_STEP);
   wb_distance_sensor_enable(left_ground_ir, TIME_STEP);
 
@@ -49,72 +49,22 @@ int main() {
   wb_motor_set_velocity(right_motor, 0.0);
 
   while (wb_robot_step(TIME_STEP) != -1) {
-    double ds0_value = wb_distance_sensor_get_value(ds0);
-    double ds1_value = wb_distance_sensor_get_value(ds1);
+    double lidar_1_value = wb_distance_sensor_get_value(lidar_1);
+    double lidar_2_value = wb_distance_sensor_get_value(lidar_2);
 
     // sensor de linha ( 952 para preto e 1024 para branco )
     double right_ground_ir_value = wb_distance_sensor_get_value(right_ground_ir);
     double left_ground_ir_value = wb_distance_sensor_get_value(left_ground_ir);
 
     double left_speed, right_speed;
-    if (ds1_value > 500) {
+    left_speed = -1;
+    right_speed = -1;
 
-      if (ds0_value > 500) {
-        left_speed = -SPEED;
-        right_speed = -SPEED / 2;
-      } else {
-
-        left_speed = -ds1_value / 100;
-        right_speed = (ds0_value / 100) + 0.5;
-      }
-    } else if (ds0_value > 500) {
-      left_speed = (ds1_value / 100) + 0.5;
-      right_speed = -ds0_value / 100;
-    } else {
-
-      left_speed = SPEED;
-      right_speed = SPEED;
-    }
-
-    printf("ds0: %f\n", ds0_value);
+    printf("lidar_1: %f\n", lidar_1_value);
+    printf("lidar_2: %f\n", lidar_2_value);
 
     wb_motor_set_velocity(left_motor, left_speed);
     wb_motor_set_velocity(right_motor, right_speed);
   }
-  while (wb_robot_step(TIME_STEP) != -1) {
-    double ds0_value = wb_distance_sensor_get_value(ds0);
-    double ds1_value = wb_distance_sensor_get_value(ds1);
-
-    // sensor de linha ( 952 para preto e 1024 para branco )
-    double right_ground_ir_value = wb_distance_sensor_get_value(right_ground_ir);
-    double left_ground_ir_value = wb_distance_sensor_get_value(left_ground_ir);
-
-    double left_speed, right_speed;
-    if (ds1_value > 500) {
-
-      if (ds0_value > 500) {
-        left_speed = -SPEED;
-        right_speed = -SPEED / 2;
-      } else {
-
-        left_speed = -ds1_value / 100;
-        right_speed = (ds0_value / 100) + 0.5;
-      }
-    } else if (ds0_value > 500) {
-      left_speed = (ds1_value / 100) + 0.5;
-      right_speed = -ds0_value / 100;
-    } else {
-
-      left_speed = SPEED;
-      right_speed = SPEED;
-    }
-
-    printf("ds0: %f\n", ds0_value);
-    printf("ds1: %f\n", ds1_value);
-
-    wb_motor_set_velocity(left_motor, left_speed);
-    wb_motor_set_velocity(right_motor, right_speed);
-  }
-
   return 0;
 }
