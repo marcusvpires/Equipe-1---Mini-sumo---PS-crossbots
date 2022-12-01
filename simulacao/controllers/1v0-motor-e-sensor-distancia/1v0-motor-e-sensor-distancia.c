@@ -33,10 +33,21 @@ int main() {
   /* Get and enable the distance sensors. */
   WbDeviceTag lidar_1 = wb_robot_get_device("lidar 1");
   WbDeviceTag lidar_2 = wb_robot_get_device("lidar 2");
-  WbDeviceTag right_ground_ir = wb_robot_get_device("right_ground_infrared");
-  WbDeviceTag left_ground_ir = wb_robot_get_device("left_ground_infrared");
+  WbDeviceTag lidar_3 = wb_robot_get_device("lidar 3");
+  WbDeviceTag lidar_4 = wb_robot_get_device("lidar 4");
+  WbDeviceTag lidar_5 = wb_robot_get_device("lidar 5");
+  WbDeviceTag lidar_6 = wb_robot_get_device("lidar 6");
+  WbDeviceTag lidar_7 = wb_robot_get_device("lidar 7");
   wb_distance_sensor_enable(lidar_1, TIME_STEP);
   wb_distance_sensor_enable(lidar_2, TIME_STEP);
+  wb_distance_sensor_enable(lidar_3, TIME_STEP);
+  wb_distance_sensor_enable(lidar_4, TIME_STEP);
+  wb_distance_sensor_enable(lidar_5, TIME_STEP);
+  wb_distance_sensor_enable(lidar_6, TIME_STEP);
+  wb_distance_sensor_enable(lidar_7, TIME_STEP);
+
+  WbDeviceTag right_ground_ir = wb_robot_get_device("right_ground_infrared");
+  WbDeviceTag left_ground_ir = wb_robot_get_device("left_ground_infrared");
   wb_distance_sensor_enable(right_ground_ir, TIME_STEP);
   wb_distance_sensor_enable(left_ground_ir, TIME_STEP);
 
@@ -51,17 +62,19 @@ int main() {
   while (wb_robot_step(TIME_STEP) != -1) {
     double lidar_1_value = wb_distance_sensor_get_value(lidar_1);
     double lidar_2_value = wb_distance_sensor_get_value(lidar_2);
+    double lidar_3_value = wb_distance_sensor_get_value(lidar_3);
+    double lidar_4_value = wb_distance_sensor_get_value(lidar_4);
+    double lidar_5_value = wb_distance_sensor_get_value(lidar_5);
+    double lidar_6_value = wb_distance_sensor_get_value(lidar_6);
+    double lidar_7_value = wb_distance_sensor_get_value(lidar_7);
 
     // sensor de linha ( 952 para preto e 1024 para branco )
     double right_ground_ir_value = wb_distance_sensor_get_value(right_ground_ir);
     double left_ground_ir_value = wb_distance_sensor_get_value(left_ground_ir);
 
     double left_speed, right_speed;
-    left_speed = -1;
-    right_speed = -1;
-
-    printf("lidar_1: %f\n", lidar_1_value);
-    printf("lidar_2: %f\n", lidar_2_value);
+    left_speed = 20;
+    right_speed = 20;
 
     wb_motor_set_velocity(left_motor, left_speed);
     wb_motor_set_velocity(right_motor, right_speed);

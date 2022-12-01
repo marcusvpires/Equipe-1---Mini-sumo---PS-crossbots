@@ -7,14 +7,15 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.9062191866945474 0.40449482759001176 0.12308826150206072 5.635261774211963
-  position -0.11386050496906255 0.41180537161242503 0.42789611807180034
+  orientation -0.04378831180934665 -0.9747378189198397 -0.21901773470721828 2.756657774871431
+  position -1.8257683051931821 1.5626411039983874 -2.7237419400080753
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 Robot {
+  translation 0 0 0.47
   children [
     DistanceSensor {
       translation 0.04 0.01 -0.07
@@ -89,14 +90,14 @@ Robot {
           device [
             RotationalMotor {
               name "left wheel motor"
-              maxVelocity 11
+              maxVelocity 50
             }
             PositionSensor {
               name "left wheel sensor"
             }
           ]
           endPoint Solid {
-            translation -0.045 0.025 0
+            translation -0.044999999999999984 0.025 0
             rotation -1 0 0 0
             children [
               DEF WHEEL Transform {
@@ -118,6 +119,8 @@ Robot {
             ]
             name "left wheel"
             boundingObject USE WHEEL
+            physics Physics {
+            }
           }
         }
         HingeJoint {
@@ -128,14 +131,14 @@ Robot {
           device [
             RotationalMotor {
               name "right wheel motor"
-              maxVelocity 11
+              maxVelocity 50
             }
             PositionSensor {
               name "right wheel sensor"
             }
           ]
           endPoint Solid {
-            translation 0.045 0.025 0
+            translation 0.044999999999999984 0.025 0
             rotation -1 0 0 0
             children [
               DEF WHEEL Transform {
@@ -157,6 +160,8 @@ Robot {
             ]
             name "right wheel"
             boundingObject USE WHEEL
+            physics Physics {
+            }
           }
         }
       ]
@@ -222,12 +227,56 @@ Robot {
       aperture 1
     }
     DistanceSensor {
+      translation -0.02 0.013 -0.042
+      rotation 0 1 0 1.80822
+      children [
+        DEF SENSOR Transform {
+          rotation 0 0 1 1.57
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.975691 0.981481 0.0252992
+                roughness 1
+                metalness 0
+              }
+              geometry Cylinder {
+                height 0.004
+                radius 0.008
+              }
+            }
+          ]
+        }
+      ]
+      name "lidar 3"
+      lookupTable [
+        0 1024 0
+        0.05 1024 0
+        0.15 0 0
+      ]
+      aperture 1
+    }
+    DistanceSensor {
       translation 0 0.013 -0.042
       rotation 0 1 0 1.5936
       children [
         USE SENSOR
       ]
-      name "lidar 3"
+      name "lidar 4"
+      lookupTable [
+        0 1024 0
+        0.05 1024 0
+        0.15 0 0
+      ]
+      type "laser"
+      aperture 1
+    }
+    DistanceSensor {
+      translation 0.02 0.013 -0.042
+      rotation 0 1 0 1.3318
+      children [
+        USE SENSOR
+      ]
+      name "lidar 5"
       lookupTable [
         0 1024 0
         0.05 1024 0
@@ -242,7 +291,7 @@ Robot {
       children [
         USE SENSOR
       ]
-      name "lidar 4"
+      name "lidar 6"
       lookupTable [
         0 1024 0
         0.05 1024 0
@@ -257,7 +306,7 @@ Robot {
       children [
         USE SENSOR
       ]
-      name "lidar 5"
+      name "lidar 7"
       lookupTable [
         0 1024 0
         0.05 1024 0
@@ -269,6 +318,8 @@ Robot {
   ]
   name "MyBot"
   boundingObject USE BODY
+  physics Physics {
+  }
   controller "1v0-motor-e-sensor-distancia"
 }
 CircleArena {
@@ -290,6 +341,7 @@ CircleArena {
   }
 }
 WoodenBox {
-  translation -0.03 0 -0.15
+  translation 0 0.08 -0.15
   size 0.1 0.1 0.1
+  mass 1
 }
