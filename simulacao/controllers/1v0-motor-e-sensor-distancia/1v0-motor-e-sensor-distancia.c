@@ -76,6 +76,42 @@ int main() {
       right_speed = SPEED;
     }
 
+    printf("ds0: %f\n", ds0_value);
+
+    wb_motor_set_velocity(left_motor, left_speed);
+    wb_motor_set_velocity(right_motor, right_speed);
+  }
+  while (wb_robot_step(TIME_STEP) != -1) {
+    double ds0_value = wb_distance_sensor_get_value(ds0);
+    double ds1_value = wb_distance_sensor_get_value(ds1);
+
+    // sensor de linha ( 952 para preto e 1024 para branco )
+    double right_ground_ir_value = wb_distance_sensor_get_value(right_ground_ir);
+    double left_ground_ir_value = wb_distance_sensor_get_value(left_ground_ir);
+
+    double left_speed, right_speed;
+    if (ds1_value > 500) {
+
+      if (ds0_value > 500) {
+        left_speed = -SPEED;
+        right_speed = -SPEED / 2;
+      } else {
+
+        left_speed = -ds1_value / 100;
+        right_speed = (ds0_value / 100) + 0.5;
+      }
+    } else if (ds0_value > 500) {
+      left_speed = (ds1_value / 100) + 0.5;
+      right_speed = -ds0_value / 100;
+    } else {
+
+      left_speed = SPEED;
+      right_speed = SPEED;
+    }
+
+    printf("ds0: %f\n", ds0_value);
+    printf("ds1: %f\n", ds1_value);
+
     wb_motor_set_velocity(left_motor, left_speed);
     wb_motor_set_velocity(right_motor, right_speed);
   }

@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.06167733978349662 0.9869644153177413 0.14865109704855822 2.3642461903412766
-  position 0.36764639149981054 0.22695428899533227 -0.41207985111998746
+  orientation -0.9933319910858125 -0.09709359424512849 -0.06216421351595904 1.145066329394789
+  position -0.10531806702559025 0.6998786663204718 0.23248458591503263
 }
 TexturedBackground {
 }
@@ -203,7 +203,7 @@ Robot {
         0.05 1024 0
         0.15 0 0
       ]
-      numberOfRays 2
+      type "laser"
       aperture 1
     }
     DistanceSensor {
@@ -218,7 +218,7 @@ Robot {
         0.05 1024 0
         0.15 0 0
       ]
-      numberOfRays 2
+      type "laser"
       aperture 1
     }
   ]
@@ -243,4 +243,8 @@ CircleArena {
   wallAppearance PBRAppearance {
     metalness 0
   }
+}
+WoodenBox {
+  translation -0.03 0 -0.15
+  size 0.1 0.1 0.1
 }
