@@ -73,8 +73,8 @@ int main() {
     double left_ground_ir_value = wb_distance_sensor_get_value(left_ground_ir);
 
     double left_speed, right_speed;
-    left_speed = 20;
-    right_speed = 20;
+    left_speed = 25;
+    right_speed = 25;
 
     wb_motor_set_velocity(left_motor, left_speed);
     wb_motor_set_velocity(right_motor, right_speed);
