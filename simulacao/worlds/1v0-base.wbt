@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.9864817679404617 0.1522949511175718 0.06049768082462009 0.7656357076839978
-  position 0.03419137027493458 1.0071915093117734 1.439064989398107
+  orientation -0.15994019507593804 -0.97268752905324 -0.16822040549045536 1.6488843281701544
+  position -1.1858189944402182 0.40097330717350294 -0.04920195690075456
   follow "MyBot"
 }
 TexturedBackground {
@@ -91,7 +91,7 @@ Robot {
           device [
             RotationalMotor {
               name "left wheel motor"
-              maxVelocity 50
+              maxVelocity 100
             }
             PositionSensor {
               name "left wheel sensor"
@@ -134,7 +134,7 @@ Robot {
           device [
             RotationalMotor {
               name "right wheel motor"
-              maxVelocity 50
+              maxVelocity 100
             }
             PositionSensor {
               name "right wheel sensor"
@@ -197,7 +197,6 @@ Robot {
         0.05 1024 0
         0.15 0 0
       ]
-      type "laser"
       aperture 1
     }
     DistanceSensor {
@@ -227,7 +226,6 @@ Robot {
         0.05 1024 0
         0.15 0 0
       ]
-      type "laser"
       aperture 1
     }
     DistanceSensor {
@@ -271,7 +269,6 @@ Robot {
         0.05 1024 0
         0.15 0 0
       ]
-      type "laser"
       aperture 1
     }
     DistanceSensor {
@@ -286,8 +283,6 @@ Robot {
         0.05 1024 0
         0.15 0 0
       ]
-      type "laser"
-      aperture 1
     }
     DistanceSensor {
       translation 0.02 0.013 -0.042
@@ -296,13 +291,6 @@ Robot {
         USE SENSOR
       ]
       name "lidar 6"
-      lookupTable [
-        0 1024 0
-        0.05 1024 0
-        0.15 0 0
-      ]
-      type "laser"
-      aperture 1
     }
     DistanceSensor {
       translation 0.02 0.013 -0.07
@@ -345,8 +333,7 @@ CircleArena {
     metalness 0
   }
 }
-WoodenBox {
-  translation 0 0.08 -0.15
-  size 0.1 0.1 0.1
-  mass 1
+Khepera3 {
+  translation -0.0989949 0 -0.251006
+  rotation 0 1 0 -2.3561953071795863
 }

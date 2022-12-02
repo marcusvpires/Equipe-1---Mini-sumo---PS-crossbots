@@ -58,6 +58,8 @@ int main() {
   wb_motor_set_position(right_motor, INFINITY);
   wb_motor_set_velocity(left_motor, 0.0);
   wb_motor_set_velocity(right_motor, 0.0);
+  
+  double initial_velocity = 1;
 
   while (wb_robot_step(TIME_STEP) != -1) {
     double lidar_1_value = wb_distance_sensor_get_value(lidar_1);
@@ -71,10 +73,17 @@ int main() {
     // sensor de linha ( 952 para preto e 1024 para branco )
     double right_ground_ir_value = wb_distance_sensor_get_value(right_ground_ir);
     double left_ground_ir_value = wb_distance_sensor_get_value(left_ground_ir);
+    
+    if (initial_velocity < 60) {
+      initial_velocity = initial_velocity * 2;
+      if (initial_velocity > 60) {
+        initial_velocity = 60;
+      }
+    }
 
     double left_speed, right_speed;
-    left_speed = 25;
-    right_speed = 25;
+    left_speed = 60;
+    right_speed = 60;
 
     wb_motor_set_velocity(left_motor, left_speed);
     wb_motor_set_velocity(right_motor, right_speed);
