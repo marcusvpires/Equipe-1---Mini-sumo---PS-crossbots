@@ -118,13 +118,6 @@ int main()
         switch (state)
         {
             case ANDAR:
-                // printf("Andando, t = %f\n", tempo);
-                // if (initial_velocity < 60) {
-                //     initial_velocity = initial_velocity * 2;
-                //     if (initial_velocity > 60) {
-                //             initial_velocity = 60;
-                //         }
-                // }
                 if(last_state == ATACAR)
                 {
                     wb_motor_set_velocity(left_motor, 20);
@@ -161,7 +154,15 @@ int main()
     }
     return 0;
 }
-
+//! Funcao de ataque, analisa qual sensor captou a menor distancia e a partir disso roda uma estrategia
+// cada estrategia esta numa maquina de estado ao qual estado vai ser setado dependendo de qual sensor captou a 
+// menor distancia
+/*!
+  \param left_motor WbDeviceTag para o motor da roda esquerda
+  \param right_motor WbDeviceTag para o motor da roda direita
+  \param tempo_inicio_tarefa float para o valor do tempo em que se iniciou o recuo
+  \param tempo float para o tempo decorrido de simulacao
+*/
 void ataque (WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo)
 {
     printf("ataque_state: %d, tempo: %f   tempo_inicio_tarefa: %f\n", ataque_state, tempo, tempo_inicio_tarefa);
@@ -241,6 +242,11 @@ void ataque (WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio
             break;
     }
 }
+//! Funcao de verificacao de oponente, 
+// verifica se algum lidar captou um sinal valido e coloca em modo ataque
+/*!
+  \param lidar_value ponteiro para o vetor de leituras dos sensores lidar
+*/
 void verifica_oponente(double *lidar_value)
 {
      // Encontrar a menor distância
@@ -254,7 +260,13 @@ void verifica_oponente(double *lidar_value)
       }
     }
 }
+//! Funcao de verificacao de linha, le qual sensor identificou a linha e indica que direcao seguir para comecar o recuo
+/*!
+  \param dir um valor inteiro definido para a direcao
+  \param right_ground_ir_value leitura do sensor de linha direito
+  \param left_ground_ir_value leitura do sensor de linha esquerdo
 
+*/
 int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, int dir)
 {
     // Borda detectada no sensor da esquerda
