@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.15994019507593804 -0.97268752905324 -0.16822040549045536 1.6488843281701544
-  position -1.1858189944402182 0.40097330717350294 -0.04920195690075456
+  orientation 0.02243659639754733 -0.9911495094362741 -0.130840548326299 3.478300591328665
+  position 0.32518433063956215 0.16796711547498341 -0.1896166051914716
   follow "MyBot"
 }
 TexturedBackground {
@@ -19,7 +19,7 @@ Robot {
   translation 0 0 0.47
   children [
     DistanceSensor {
-      translation 0.04 0.01 -0.07
+      translation 0.04 0.02 -0.07
       rotation 0.5816878392534963 -0.5816888392532199 0.5685748428772068 -2.1076153071795867
       children [
         DEF SENSOR Transform {
@@ -50,7 +50,7 @@ Robot {
       aperture 1
     }
     DistanceSensor {
-      translation -0.04 0.01 -0.07
+      translation -0.0399999 0.02 -0.07
       rotation -0.5816871699850122 0.5816901699858891 -0.5685741661530315 2.10762
       children [
         DEF SENSOR Transform {
