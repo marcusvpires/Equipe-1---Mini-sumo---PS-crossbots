@@ -26,38 +26,63 @@
 
 #define SPEED 6
 #define TIME_STEP 64
-enum direcao {LEFT, RIGHT};
-enum STATE {ANDAR, RECUAR, PROCURA, ATACA};
-enum RECUO_STATE {RE, DELAY, ROTACIONAR, VOLTA_ANDAR, PARAR};
+enum direcao
+{
+    LEFT,
+    RIGHT
+};
+enum STATE
+{
+    ANDAR,
+    RECUAR,
+    PROCURA,
+    ATACAR,
+    PARAR, 
+    DELAY
+};
+enum RECUO_STATE
+{
+    RE,
+    RECUO_DELAY,
+    ROTACIONAR,
+    VOLTA_ANDAR,
+};
+enum ATAQUE_STATE
+{
+    MODO_1,
+    MODO_2,
+    MODO_3,
+    MODO_4,
+    MODO_5,
+    MODO_6,
+    MODO_7, 
+    ATAQUE_DELAY
+};
+int last_ataque_state;
+int ataque_state;
 int recuo_state = RE;
+int last_recuo_state;
+int state = ANDAR;
+int last_state;
 
-int recuar(int dir, WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo);
+void recuar(int dir, WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo);
+int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, int dir);
+void verifica_oponente(double *lidar_value);
+void ataque (WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo);
 
-int main() {
+int main()
+{
     wb_robot_init(); /* necessary to initialize webots stuff */
-    printf ("Robo inicializado\n");
+    printf("Robo inicializado\n");
     /* Get and enable the distance sensors. */
+    // Vetores para os sensores Lidar
     char lidar_tag[7][8] = {"lidar 1", "lidar 2", "lidar 3", "lidar 4", "lidar 5", "lidar 6", "lidar 7"};
     WbDeviceTag lidar[7];
-    for (int i=0; i<7; i++)
+    for (int i = 0; i < 7; i++)
     {
         lidar[i] = wb_robot_get_device(lidar_tag[i]);
         wb_distance_sensor_enable(lidar[i], TIME_STEP);
     }
-    // WbDeviceTag lidar_1 = wb_robot_get_device("lidar 1");
-    // WbDeviceTag lidar_2 = wb_robot_get_device("lidar 2");
-    // WbDeviceTag lidar_3 = wb_robot_get_device("lidar 3");
-    // WbDeviceTag lidar_4 = wb_robot_get_device("lidar 4");
-    // WbDeviceTag lidar_5 = wb_robot_get_device("lidar 5");
-    // WbDeviceTag lidar_6 = wb_robot_get_device("lidar 6");
-    // WbDeviceTag lidar_7 = wb_robot_get_device("lidar 7");
-    // wb_distance_sensor_enable(lidar_1, TIME_STEP);
-    // wb_distance_sensor_enable(lidar_2, TIME_STEP);
-    // wb_distance_sensor_enable(lidar_3, TIME_STEP);
-    // wb_distance_sensor_enable(lidar_4, TIME_STEP);
-    // wb_distance_sensor_enable(lidar_5, TIME_STEP);
-    // wb_distance_sensor_enable(lidar_6, TIME_STEP);
-    // wb_distance_sensor_enable(lidar_7, TIME_STEP);
 
     WbDeviceTag right_ground_ir = wb_robot_get_device("right_ground_infrared");
     WbDeviceTag left_ground_ir = wb_robot_get_device("left_ground_infrared");
@@ -71,108 +96,237 @@ int main() {
     wb_motor_set_position(right_motor, INFINITY);
     wb_motor_set_velocity(left_motor, 0.0);
     wb_motor_set_velocity(right_motor, 0.0);
-    double lidar_1_value, lidar_2_value, lidar_3_value, lidar_4_value, lidar_5_value, lidar_6_value, lidar_7_value;
     double lidar_value[7];
     double right_ground_ir_value = 0, left_ground_ir_value = 0;
     double initial_velocity = 1;
     float tempo, tempo_inicio_tarefa;
-    int dir; 
-    int state = ANDAR;
+    int dir;
     double left_speed = 0, right_speed = 0;
-    while (wb_robot_step(TIME_STEP) != -1) 
+    while (wb_robot_step(TIME_STEP) != -1)
     {
         tempo = wb_robot_get_time();
-        for (int i=0; i<7; i++)
+        for (int i = 0; i < 7; i++)
         {
             lidar_value[i] = wb_distance_sensor_get_value(lidar[i]);
+            printf("Lidar %d: %f\n", i+1, lidar_value[i]);
         }
-        // lidar_1_value = wb_distance_sensor_get_value(lidar_1);
-        // lidar_2_value = wb_distance_sensor_get_value(lidar_2);
-        // lidar_3_value = wb_distance_sensor_get_value(lidar_3);
-        // lidar_4_value = wb_distance_sensor_get_value(lidar_4);
-        // lidar_5_value = wb_distance_sensor_get_value(lidar_5);
-        // lidar_6_value = wb_distance_sensor_get_value(lidar_6);
-        // lidar_7_value = wb_distance_sensor_get_value(lidar_7);
-
         // sensor de linha ( 952 para preto e 1024 para branco )
         right_ground_ir_value = wb_distance_sensor_get_value(right_ground_ir);
         left_ground_ir_value = wb_distance_sensor_get_value(left_ground_ir);
+        printf("State: %d   Tempo: %f\n", state, tempo);
         // printf("right_ground_ir_value = %f left_ground_ir_value = %f\n", right_ground_ir_value, left_ground_ir_value);
-        switch(state)
+        switch (state)
         {
             case ANDAR:
+                // printf("Andando, t = %f\n", tempo);
                 // if (initial_velocity < 60) {
                 //     initial_velocity = initial_velocity * 2;
                 //     if (initial_velocity > 60) {
                 //             initial_velocity = 60;
                 //         }
                 // }
+                if(last_state == ATACAR)
+                {
+                    wb_motor_set_velocity(left_motor, 20);
+                    wb_motor_set_velocity(right_motor, 20);
+                    last_state = ANDAR;
+                    tempo_inicio_tarefa = wb_robot_get_time();
+                    state = DELAY;
+                }
                 wb_motor_set_velocity(left_motor, 10);
                 wb_motor_set_velocity(right_motor, 10);
-                // Borda detectada no sensor da esquerda
-                if (left_ground_ir_value > 1020) {
-                    // Faz recuo pela direita
-                    // printf("Borda esquerda detectada\n");
-                    state = RECUAR;
-                    recuo_state = RE;
+                dir = verifica_linha(right_ground_ir_value, left_ground_ir_value, dir);
+                verifica_oponente(lidar_value);
+                if (state == RECUAR || tempo == ATACAR)
                     tempo_inicio_tarefa = wb_robot_get_time();
-                    dir = RIGHT;
-                }
-                // Borda detectada no sensor da direita
-                else if (right_ground_ir_value > 1020) {
-                    // Faz recuo pela esquerda
-                    // printf("Borda direita detectada\n");
-                    state = RECUAR;
-                    recuo_state = RE;
-                    tempo_inicio_tarefa = wb_robot_get_time();
-                    dir = LEFT;
-                }
                 break;
             case RECUAR:
-                if(recuar(dir, left_motor, right_motor, tempo_inicio_tarefa, tempo) == 1)
-                    state = ANDAR;
+                recuar(dir, left_motor, right_motor, tempo_inicio_tarefa, tempo);
                 break;
-        }    
+            case ATACAR:
+                ataque(left_motor, right_motor, tempo_inicio_tarefa, tempo);
+                break;
+            case PARAR:
+                printf("Parando!\n");
+                wb_motor_set_velocity(left_motor, 0);
+                wb_motor_set_velocity(right_motor, 0);
+            case DELAY:
+                if (tempo > (tempo_inicio_tarefa + 0.4)) // delay
+                {
+                    state = ANDAR;
+                }
+            break;
+
+        }
     }
-  return 0;
+    return 0;
 }
 
-int recuar(int dir, WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo)
+void ataque (WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo)
 {
-    switch(recuo_state)
+    printf("ataque_state: %d, tempo: %f   tempo_inicio_tarefa: %f\n", ataque_state, tempo, tempo_inicio_tarefa);
+    last_state = ATACAR;
+    switch(ataque_state)
+    {
+        case MODO_1:
+            printf("Modo 1!\n");
+            wb_motor_set_velocity(left_motor, -20);
+            wb_motor_set_velocity(right_motor, 20);
+            last_ataque_state = ataque_state;
+            ataque_state = ATAQUE_DELAY;
+            break;
+        case MODO_2:
+            printf("Modo 2!\n");
+            wb_motor_set_velocity(left_motor, -20);
+            wb_motor_set_velocity(right_motor, -0);
+            last_ataque_state = ataque_state;
+            ataque_state = ATAQUE_DELAY;
+            break;
+        case MODO_3:
+            printf("Modo 3!\n");
+            // wb_motor_set_velocity(left_motor, 20);
+            // wb_motor_set_velocity(right_motor, -20);
+            // last_ataque_state = ataque_state;
+            // ataque_state = ATAQUE_DELAY;
+            state = ANDAR;
+            break;
+        case MODO_4:
+            printf("Modo 4!\n");
+            state = ANDAR;
+            break;
+        case MODO_5:
+            printf("Modo 5!\n");
+            // wb_motor_set_velocity(left_motor, -20);
+            // wb_motor_set_velocity(right_motor, 20);
+            // last_ataque_state = ataque_state;
+            // ataque_state = ATAQUE_DELAY;
+            state = ANDAR;
+            break;
+        case MODO_6:
+            printf("Modo 6!\n");
+            wb_motor_set_velocity(left_motor, 20);
+            wb_motor_set_velocity(right_motor, -20);
+            last_ataque_state = ataque_state;
+            ataque_state = ATAQUE_DELAY;
+            break;
+        case MODO_7:
+            printf("Modo 7!\n");
+            wb_motor_set_velocity(left_motor, 20);
+            wb_motor_set_velocity(right_motor, -20);
+            last_ataque_state = ataque_state;
+            ataque_state = ATAQUE_DELAY;
+            break;
+        case ATAQUE_DELAY:
+            if(last_ataque_state == MODO_1 || last_ataque_state == MODO_6)
+            {
+                if (tempo > (tempo_inicio_tarefa + 0.6)) // delay
+                {
+                    state = ANDAR;
+                }
+            }
+            else if(last_ataque_state == MODO_2 || last_ataque_state == MODO_5)
+            {
+                if (tempo > (tempo_inicio_tarefa + 0.3)) // delay
+                {
+                    state = ANDAR;
+                }
+            }
+            else if(last_ataque_state == MODO_3 || last_ataque_state == MODO_7)
+            {
+                if (tempo > (tempo_inicio_tarefa + 0.15)) // delay
+                {
+                    state = ANDAR;
+                }
+            }
+            break;
+    }
+}
+void verifica_oponente(double *lidar_value)
+{
+     // Encontrar a menor distância
+    double menor_dist = 1500.0;
+    for (int i = 0; i < 7; i++) {
+      if (lidar_value[i] < menor_dist && lidar_value[i] > 1) {
+        printf("Iniciando ataque\n");
+        menor_dist = lidar_value[i];
+        state = ATACAR;
+        ataque_state = i;
+      }
+    }
+}
+
+int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, int dir)
+{
+    // Borda detectada no sensor da esquerda
+    if (left_ground_ir_value > 1020)
+    {
+        // Faz recuo pela direita
+        printf("Borda esquerda detectada\n");
+        state = RECUAR;
+        recuo_state = RE;
+        dir = RIGHT;
+    }
+    // Borda detectada no sensor da direita
+    else if (right_ground_ir_value > 1020)
+    {
+        // Faz recuo pela esquerda
+        printf("Borda direita detectada\n");
+        state = RECUAR;
+        recuo_state = RE;
+        dir = LEFT;
+    }
+    return dir;
+}
+
+//! Funcao de recuo, da ré e depois rotaciona
+/*!
+  \param dir um valor inteiro definido para a direcao
+  \param left_motor WbDeviceTag para o motor da roda esquerda
+  \param right_motor WbDeviceTag para o motor da roda direita
+  \param tempo_inicio_tarefa float para o valor do tempo em que se iniciou o recuo
+  \param tempo float para o tempo decorrido de simulacao
+*/
+void recuar(int dir, WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo)
+{
+    // printf("recuo_state: %d, tempo: %f   tempo_inicio_tarefa: %f dir: %d\n", recuo_state, tempo, tempo_inicio_tarefa, dir);
+    switch (recuo_state)
     {
         case RE:
-            printf("Ré\n");
-            wb_motor_set_velocity(left_motor, -5);
-            wb_motor_set_velocity(right_motor, -5);
-            recuo_state = DELAY;
+            // printf("Ré, tempo: %f e tempo_inicio_tarefa %f\n", tempo, tempo_inicio_tarefa);
+            wb_motor_set_velocity(left_motor, -10);
+            wb_motor_set_velocity(right_motor, -10);
+            last_recuo_state = RE;
+            recuo_state = RECUO_DELAY;
             // recuo_state = PARAR;
             break;
         case ROTACIONAR:
-            printf("Rotacionando\n");
-            if (dir == LEFT) {
-                wb_motor_set_velocity(left_motor, -5);
-                wb_motor_set_velocity(right_motor, 5);
-                recuo_state = DELAY;
+            if (dir)
+            {
+                wb_motor_set_velocity(left_motor, -10);
+                wb_motor_set_velocity(right_motor, 10);
+                last_recuo_state = ROTACIONAR;
+                recuo_state = RECUO_DELAY;
             }
-            else {
-                wb_motor_set_velocity(left_motor,   5);
-                wb_motor_set_velocity(right_motor, -5);
-                recuo_state = DELAY;
+            else
+            {
+                wb_motor_set_velocity(left_motor, 10);
+                wb_motor_set_velocity(right_motor, -10);
+                last_recuo_state = ROTACIONAR;
+                recuo_state = RECUO_DELAY;
             }
             break;
-        case DELAY:
-            printf("Delay\n");
-            if (tempo > tempo_inicio_tarefa + 0.9) // delay
-                recuo_state = VOLTA_ANDAR;
-            else if (tempo > tempo_inicio_tarefa + 0.3)
+        case RECUO_DELAY:
+            if (tempo > (tempo_inicio_tarefa + 1.5)) // delay
+            {
+                state = ANDAR;
+            }
+            else if (tempo > (tempo_inicio_tarefa + 0.8) && last_recuo_state != ROTACIONAR)
+            {
                 recuo_state = ROTACIONAR;
+            }
             break;
-        case VOLTA_ANDAR:
-            return 1;
-        case PARAR:
-            wb_motor_set_velocity(left_motor, 0);
-            wb_motor_set_velocity(right_motor, 0);
-            break;
+        // case VOLTA_ANDAR:
+        //     printf("Voltando a andar!\n");
+        //     return 1;
     }
 }

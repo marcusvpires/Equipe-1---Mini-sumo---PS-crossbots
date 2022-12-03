@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.02243659639754733 -0.9911495094362741 -0.130840548326299 3.478300591328665
-  position 0.32518433063956215 0.16796711547498341 -0.1896166051914716
+  orientation 0.04507163557587844 -0.9938675582400396 -0.10097437469227913 3.9766802743229768
+  position 0.8467065689166222 0.3150251992081506 -0.6627674028042058
   follow "MyBot"
 }
 TexturedBackground {
@@ -16,7 +16,7 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 Robot {
-  translation 0 0 0.47
+  translation 0 0 0.27
   children [
     DistanceSensor {
       translation 0.04 0.02 -0.07
@@ -171,7 +171,7 @@ Robot {
       ]
     }
     DEF BODY Transform {
-      translation 0 0.03 -0.028
+      translation 0 0.035 -0.028
       children [
         Shape {
           appearance PBRAppearance {
@@ -334,6 +334,7 @@ CircleArena {
   }
 }
 Khepera3 {
-  translation -0.0989949 0 -0.251006
+  translation 0.275771 0 0.12376
   rotation 0 1 0 -2.3561953071795863
+  controller ""
 }
