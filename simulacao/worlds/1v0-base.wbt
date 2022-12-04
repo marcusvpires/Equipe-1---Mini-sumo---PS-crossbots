@@ -8,7 +8,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation 0.14613850913401474 0.9779702124332441 0.1490563643101591 4.670355642543656
-  position -0.5944250653239256 0.22718347981695564 0.1979996632707301
+  position -1.4218060213387398 0.48544100123899564 0.18164156278271598
   follow "MyBot"
 }
 TexturedBackground {
@@ -16,7 +16,7 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 Robot {
-  translation 0 0 0.27
+  translation 0 0 -0.21
   children [
     DistanceSensor {
       translation 0.04 0.02 -0.07
@@ -198,7 +198,7 @@ Robot {
         0.15 0 0
       ]
     }
-    Transform {
+    DEF lidares_frontais Transform {
       translation 0 0 -0.04
       children [
         DistanceSensor {
