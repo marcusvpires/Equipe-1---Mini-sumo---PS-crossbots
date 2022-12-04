@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.14613850913401474 0.9779702124332441 0.1490563643101591 4.670355642543656
-  position -1.4218060213387398 0.48544100123899564 0.18164156278271598
+  orientation -0.09168717792676187 0.970409670930393 0.22337979310714914 2.3834975626257453
+  position 1.172965039980653 0.9039991209636506 -1.361644454372404
   follow "MyBot"
 }
 TexturedBackground {
@@ -16,7 +16,8 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 Robot {
-  translation 0 0 -0.21
+  translation -1.63138e-07 0 -0.37
+  rotation 0 -1 0 1.5708
   children [
     DistanceSensor {
       translation 0.04 0.02 -0.07
@@ -289,7 +290,7 @@ Robot {
   physics Physics {
     mass 10
   }
-  controller "1v0-motor-e-sensor-distancia"
+  controller "1v1"
 }
 CircleArena {
   radius 0.5

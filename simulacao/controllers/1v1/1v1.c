@@ -3,39 +3,16 @@
 #include <webots/motor.h>
 #include <webots/robot.h>
 
-#define SPEED 6
-#define TIME_STEP 64
-
-enum DIRECAO { LEFT, RIGHT };
-enum STATE { ANDAR, ESCAPA_LINHA, PROCURA, ATACAR, PARAR, DELAY };
-int state = ANDAR;
-int last_state;
-double left_speed = 0, right_speed = 0;
-float tempo, tempo_inicio_tarefa, tempo_relativo;
-int direcao;
-float time_task[20];
-
-void setState(int new_state) {
-  if ()
-}
-
-void verifica_linha(double right_ir_v, double left_ir_v) {
-  if (left_ir_v > 1000 || right_ir_v > 1000) {
-    tempo_inicio_tarefa = tempo;
-    state = ESCAPA_LINHA;
-    if (left_ir_v > 1000) {
-      printf("Borda direita detectada\n");
-      direcao = RIGHT;
-    } else {
-      printf("Borda esquerda detectada\n");
-      direcao = LEFT;
-    }
-  }
-}
+#define TIME_STEP 1
 
 int main() {
   wb_robot_init();
   printf("Robo inicializado\n");
+
+  enum STATE { SEARCH, LINE_R, LINE_L, ATTACK };
+  int last_state, state = SEARCH, MAX_SPEED = 20, step = 0;
+  double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
+  float tm, tm_start, tm_relative;
 
   // Vetores para os sensores Lidar
   char lidar_tag[7][8] = {"lidar 1", "lidar 2", "lidar 3", "lidar 4",
@@ -63,52 +40,78 @@ int main() {
   double lidar_v[7];
   double right_ir_v = 0, left_ir_v = 0;
 
+  void check_line(double right_ir_v, double left_ir_v) {
+    if ((state == SEARCH || state == ATTACK) &&
+        (left_ir_v > 1000 || right_ir_v > 1000)) {
+      tm_start = tm;
+      step = 0;
+      if (left_ir_v > 1000) {
+        printf("Borda esquerda detectada\n");
+        state = LINE_R;
+      } else {
+        printf("Borda direita detectada\n");
+        state = LINE_L;
+      }
+    }
+  }
+
+  int setSpeed(int speed, int motor) {
+    if (speed > motor + 5) {
+      return (motor + 5);
+    } else if (speed < motor - 5) {
+      return (motor - 5);
+    } else {
+      return speed;
+    }
+  }
+
+  int setState(int new_state) {
+    tm_start = tm;
+    step = 0;
+    state = new_state;
+  }
+
   while (wb_robot_step(TIME_STEP) != -1) {
-    tempo = wb_robot_get_time();
+    tm = wb_robot_get_time();
 
     // valores dos lidares
-    printf("lidares: ");
     for (int i = 0; i < 7; i++) {
       lidar_v[i] = wb_distance_sensor_get_value(lidar[i]);
-      printf(" %d: %f", i + 1, lidar_v[i]);
     }
-    printf("\n");
 
     // sensor de linha ( 952 para preto e 1024 para branco )
     left_ir_v = wb_distance_sensor_get_value(left_ir);
     right_ir_v = wb_distance_sensor_get_value(right_ir);
 
-    printf("right_ir: %f; left_ir: %f; state: %d; tempo: %f\n", right_ir_v,
-           left_ir_v, state, tempo);
-    tempo_relativo = tempo - tempo_inicio_tarefa;
+    check_line(right_ir_v, left_ir_v);
+
+    tm_relative = tm - tm_start;
+    printf("state: %d; tm_relative: %f; step: %d\n", state, tm_relative, step);
 
     switch (state) {
-      case ANDAR:
-        left_speed = 10;
-        right_speed = 10;
+      case SEARCH:
+        speed_1 = 15;
+        speed_2 = 15;
         break;
-      case ESCAPA_LINHA:
-        time_task = [ 1.2, 1, 3 ];
-        if (tempo_relativo < time_task[1])
-
-        left_speed = 10;
-        right_speed = 10;
+      case LINE_R:
+        speed_1 = -20;
+        speed_2 = 20;
+        if (tm_relative > 0.2) setState(SEARCH);
         break;
-      case ATACAR:
-        left_speed = 10;
-        right_speed = 10;
-        break;
-      case PARAR:
-        left_speed = 10;
-        right_speed = 10;
-        break;
-      case DELAY:
-        left_speed = 10;
-        right_speed = 10;
+      case LINE_L:
+        speed_1 = 20;
+        speed_2 = -20;
+        if (tm_relative > 0.2) setState(SEARCH);
         break;
     }
-    wb_motor_set_velocity(right_motor, right_speed);
-    wb_motor_set_velocity(left_motor, left_speed);
+
+    motor_1 = setSpeed(speed_1, motor_1);
+    motor_2 = setSpeed(speed_2, motor_2);
+    printf("1: %lf >> %lf;  2: %lf >> %lf\n", motor_1, speed_1, motor_2,
+           speed_2);
+
+    wb_motor_set_velocity(right_motor, motor_1);
+    wb_motor_set_velocity(left_motor, motor_2);
   }
   return 0;
 }
