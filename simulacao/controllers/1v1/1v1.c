@@ -11,21 +11,23 @@ enum STATE { ANDAR, ESCAPA_LINHA, PROCURA, ATACAR, PARAR, DELAY };
 int state = ANDAR;
 int last_state;
 double left_speed = 0, right_speed = 0;
-float tempo, tempo_inicio_tarefa;
+float tempo, tempo_inicio_tarefa, tempo_relativo;
 int direcao;
+float time_task[20];
+
+void setState(int new_state) {
+  if ()
+}
 
 void verifica_linha(double right_ir_v, double left_ir_v) {
   if (left_ir_v > 1000 || right_ir_v > 1000) {
     tempo_inicio_tarefa = tempo;
     state = ESCAPA_LINHA;
-
-    if (left_ir_v > 1020) {
-      printf("Borda esquerda detectada\n");
-      direcao = RIGHT;
-    } else if (right_ir_v > 1020) {
+    if (left_ir_v > 1000) {
       printf("Borda direita detectada\n");
-      tempo_inicio_tarefa = tempo;
-      state = ESCAPA_LINHA;
+      direcao = RIGHT;
+    } else {
+      printf("Borda esquerda detectada\n");
       direcao = LEFT;
     }
   }
@@ -78,13 +80,16 @@ int main() {
 
     printf("right_ir: %f; left_ir: %f; state: %d; tempo: %f\n", right_ir_v,
            left_ir_v, state, tempo);
-    
+    tempo_relativo = tempo - tempo_inicio_tarefa;
+
     switch (state) {
       case ANDAR:
         left_speed = 10;
         right_speed = 10;
         break;
       case ESCAPA_LINHA:
+        time_task = [ 1.2, 1, 3 ];
+        if (tempo_relativo < time_task[1])
 
         left_speed = 10;
         right_speed = 10;
