@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.14613850913401474 0.9779702124332441 0.1490563643101591 4.670355642543656
-  position -0.5944250653239256 0.22718347981695564 0.1979996632707301
+  orientation 0.3472452376698204 0.9248445768936215 0.15518780076439026 5.382904109143598
+  position -0.9012021508781075 0.4929360033959095 0.6857114750411597
   follow "MyBot"
 }
 TexturedBackground {
@@ -192,11 +192,7 @@ Robot {
         USE SENSOR
       ]
       name "lidar 1"
-      lookupTable [
-        0 1024 0
-        0.05 1024 0
-        0.15 0 0
-      ]
+      type "laser"
     }
     Transform {
       translation 0 0 -0.04
@@ -293,7 +289,7 @@ Robot {
   physics Physics {
     mass 10
   }
-  controller "1v1"
+  controller "1v0-motor-e-sensor-distancia"
 }
 CircleArena {
   radius 0.5
@@ -314,6 +310,6 @@ CircleArena {
   }
 }
 WoodenBox {
-  translation 0 0.05 0
-  size 0.5 0.1 0.1
+  translation -0.11 0.05 -0.2
+  size 0.1 0.1 0.1
 }

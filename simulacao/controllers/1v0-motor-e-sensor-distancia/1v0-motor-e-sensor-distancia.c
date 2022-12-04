@@ -123,8 +123,8 @@ int main()
                     wb_motor_set_velocity(left_motor, 20);
                     wb_motor_set_velocity(right_motor, 20);
                     last_state = ANDAR;
-                    tempo_inicio_tarefa = wb_robot_get_time();
-                    state = DELAY;
+                    // tempo_inicio_tarefa = wb_robot_get_time();
+                    // state = DELAY;
                 }
                 wb_motor_set_velocity(left_motor, 10);
                 wb_motor_set_velocity(right_motor, 10);
@@ -144,7 +144,7 @@ int main()
                 wb_motor_set_velocity(left_motor, 0);
                 wb_motor_set_velocity(right_motor, 0);
             case DELAY:
-                if (tempo > (tempo_inicio_tarefa + 0.4)) // delay
+                if (tempo > (tempo_inicio_tarefa + 0.1)) // delay
                 {
                     state = ANDAR;
                 }
@@ -179,16 +179,16 @@ void ataque (WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio
         case MODO_2:
             printf("Modo 2!\n");
             wb_motor_set_velocity(left_motor, -20);
-            wb_motor_set_velocity(right_motor, -0);
+            wb_motor_set_velocity(right_motor, 20);
             last_ataque_state = ataque_state;
             ataque_state = ATAQUE_DELAY;
             break;
         case MODO_3:
             printf("Modo 3!\n");
-            // wb_motor_set_velocity(left_motor, 20);
-            // wb_motor_set_velocity(right_motor, -20);
-            // last_ataque_state = ataque_state;
-            // ataque_state = ATAQUE_DELAY;
+            wb_motor_set_velocity(left_motor, -20);
+            wb_motor_set_velocity(right_motor, 20);
+            last_ataque_state = ataque_state;
+            ataque_state = ATAQUE_DELAY;
             state = ANDAR;
             break;
         case MODO_4:
@@ -197,10 +197,10 @@ void ataque (WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio
             break;
         case MODO_5:
             printf("Modo 5!\n");
-            // wb_motor_set_velocity(left_motor, -20);
-            // wb_motor_set_velocity(right_motor, 20);
-            // last_ataque_state = ataque_state;
-            // ataque_state = ATAQUE_DELAY;
+            wb_motor_set_velocity(left_motor, 20);
+            wb_motor_set_velocity(right_motor, -20);
+            last_ataque_state = ataque_state;
+            ataque_state = ATAQUE_DELAY;
             state = ANDAR;
             break;
         case MODO_6:
@@ -250,10 +250,9 @@ void ataque (WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio
 void verifica_oponente(double *lidar_value)
 {
      // Encontrar a menor distância
-    double menor_dist = 1500.0;
+    double menor_dist = 900.0;
     for (int i = 0; i < 7; i++) {
       if (lidar_value[i] < menor_dist && lidar_value[i] > 1) {
-        printf("Iniciando ataque\n");
         menor_dist = lidar_value[i];
         state = ATACAR;
         ataque_state = i;
