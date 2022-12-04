@@ -7,15 +7,29 @@
 #define TIME_STEP 64
 
 enum DIRECAO { LEFT, RIGHT };
-enum STATE { ANDAR, RECUAR, PROCURA, ATACAR, PARAR, DELAY };
+enum STATE { ANDAR, ESCAPA_LINHA, PROCURA, ATACAR, PARAR, DELAY };
 int state = ANDAR;
 int last_state;
 double left_speed = 0, right_speed = 0;
 float tempo, tempo_inicio_tarefa;
 int direcao;
-int prioridade;
 
-int verifica_linha(double right_ir_value, double left_ir_value);
+void verifica_linha(double right_ir_v, double left_ir_v) {
+  if (left_ir_v > 1000 || right_ir_v > 1000) {
+    tempo_inicio_tarefa = tempo;
+    state = ESCAPA_LINHA;
+
+    if (left_ir_v > 1020) {
+      printf("Borda esquerda detectada\n");
+      direcao = RIGHT;
+    } else if (right_ir_v > 1020) {
+      printf("Borda direita detectada\n");
+      tempo_inicio_tarefa = tempo;
+      state = ESCAPA_LINHA;
+      direcao = LEFT;
+    }
+  }
+}
 
 int main() {
   wb_robot_init();
@@ -44,8 +58,8 @@ int main() {
   wb_motor_set_velocity(left_motor, 0.0);
   wb_motor_set_velocity(right_motor, 0.0);
 
-  double lidar_value[7];
-  double right_ir_value = 0, left_ir_value = 0;
+  double lidar_v[7];
+  double right_ir_v = 0, left_ir_v = 0;
 
   while (wb_robot_step(TIME_STEP) != -1) {
     tempo = wb_robot_get_time();
@@ -53,22 +67,25 @@ int main() {
     // valores dos lidares
     printf("lidares: ");
     for (int i = 0; i < 7; i++) {
-      lidar_value[i] = wb_distance_sensor_get_value(lidar[i]);
-      printf(" %d: %f", i + 1, lidar_value[i]);
+      lidar_v[i] = wb_distance_sensor_get_value(lidar[i]);
+      printf(" %d: %f", i + 1, lidar_v[i]);
     }
     printf("\n");
 
     // sensor de linha ( 952 para preto e 1024 para branco )
-    right_ir_value = wb_distance_sensor_get_value(right_ir);
-    left_ir_value = wb_distance_sensor_get_value(left_ir);
+    left_ir_v = wb_distance_sensor_get_value(left_ir);
+    right_ir_v = wb_distance_sensor_get_value(right_ir);
 
-    printf("state: %d; tempo: %f\n", state, tempo);
+    printf("right_ir: %f; left_ir: %f; state: %d; tempo: %f\n", right_ir_v,
+           left_ir_v, state, tempo);
+    
     switch (state) {
       case ANDAR:
         left_speed = 10;
         right_speed = 10;
         break;
-      case RECUAR:
+      case ESCAPA_LINHA:
+
         left_speed = 10;
         right_speed = 10;
         break;
@@ -89,16 +106,4 @@ int main() {
     wb_motor_set_velocity(left_motor, left_speed);
   }
   return 0;
-}
-
-int verifica_linha(double right_ir_value, double left_ir_value) {
-  if (left_ir_value > 1020) {
-    printf("Borda esquerda detectada\n");
-    state = RECUAR;
-    direcao = RIGHT;
-  } else if (right_ir_value > 1020) {
-    printf("Borda direita detectada\n");
-    state = RECUAR;
-    direcao = LEFT;
-  }
 }
