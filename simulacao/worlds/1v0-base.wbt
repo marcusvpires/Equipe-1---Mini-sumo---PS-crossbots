@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.04507163557587844 -0.9938675582400396 -0.10097437469227913 3.9766802743229768
-  position 0.8467065689166222 0.3150251992081506 -0.6627674028042058
+  orientation 0.14613850913401474 0.9779702124332441 0.1490563643101591 4.670355642543656
+  position -0.5944250653239256 0.22718347981695564 0.1979996632707301
   follow "MyBot"
 }
 TexturedBackground {
@@ -197,100 +197,86 @@ Robot {
         0.05 1024 0
         0.15 0 0
       ]
-      aperture 1
     }
-    DistanceSensor {
-      translation -0.02 0.013 -0.042
-      rotation 0 1 0 2.07
+    Transform {
+      translation 0 0 -0.04
       children [
-        DEF SENSOR Transform {
-          rotation 0 0 1 1.57
+        DistanceSensor {
+          translation -0.02 0.013 -0.042
+          rotation 0 1 0 2.07
           children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 0.975691 0.981481 0.0252992
-                roughness 1
-                metalness 0
-              }
-              geometry Cylinder {
-                height 0.004
-                radius 0.008
-              }
+            DEF SENSOR Transform {
+              rotation 0 0 1 1.57
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.975691 0.981481 0.0252992
+                    roughness 1
+                    metalness 0
+                  }
+                  geometry Cylinder {
+                    height 0.004
+                    radius 0.008
+                  }
+                }
+              ]
             }
           ]
+          name "lidar 2"
+          type "laser"
         }
-      ]
-      name "lidar 2"
-      lookupTable [
-        0 1024 0
-        0.05 1024 0
-        0.15 0 0
-      ]
-      aperture 1
-    }
-    DistanceSensor {
-      translation -0.02 0.013 -0.042
-      rotation 0 1 0 1.80822
-      children [
-        DEF SENSOR Transform {
-          rotation 0 0 1 1.57
+        DistanceSensor {
+          translation -0.02 0.013 -0.042
+          rotation 0 1 0 1.80822
           children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 0.975691 0.981481 0.0252992
-                roughness 1
-                metalness 0
-              }
-              geometry Cylinder {
-                height 0.004
-                radius 0.008
-              }
+            DEF SENSOR Transform {
+              rotation 0 0 1 1.57
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.975691 0.981481 0.0252992
+                    roughness 1
+                    metalness 0
+                  }
+                  geometry Cylinder {
+                    height 0.004
+                    radius 0.008
+                  }
+                }
+              ]
             }
           ]
+          name "lidar 3"
+          type "laser"
+        }
+        DistanceSensor {
+          translation 0 0.013 -0.042
+          rotation 0 1 0 1.5936
+          children [
+            USE SENSOR
+          ]
+          name "lidar 4"
+          type "laser"
+        }
+        DistanceSensor {
+          translation 0.02 0.013 -0.042
+          rotation 0 1 0 1.3318
+          children [
+            USE SENSOR
+          ]
+          name "lidar 5"
+          type "laser"
+        }
+        DistanceSensor {
+          translation 0.02 0.013 -0.042
+          rotation 0 1 0 1.07
+          children [
+            USE SENSOR
+          ]
+          name "lidar 6"
+          type "laser"
         }
       ]
-      name "lidar 3"
-      lookupTable [
-        0 1024 0
-        0.05 1024 0
-        0.15 0 0
-      ]
-      aperture 1
-    }
-    DistanceSensor {
-      translation 0 0.013 -0.042
-      rotation 0 1 0 1.5936
-      children [
-        USE SENSOR
-      ]
-      name "lidar 4"
-      lookupTable [
-        0 1024 0
-        0.05 1024 0
-        0.15 0 0
-      ]
-      aperture 1
-    }
-    DistanceSensor {
-      translation 0.02 0.013 -0.042
-      rotation 0 1 0 1.3318
-      children [
-        USE SENSOR
-      ]
-      name "lidar 5"
-      lookupTable [
-        0 1024 0
-        0.05 1024 0
-        0.15 0 0
-      ]
-    }
-    DistanceSensor {
-      translation 0.02 0.013 -0.042
-      rotation 0 1 0 1.07
-      children [
-        USE SENSOR
-      ]
-      name "lidar 6"
     }
     DistanceSensor {
       translation 0.02 0.013 -0.07
@@ -299,13 +285,7 @@ Robot {
         USE SENSOR
       ]
       name "lidar 7"
-      lookupTable [
-        0 1024 0
-        0.05 1024 0
-        0.15 0 0
-      ]
       type "laser"
-      aperture 1
     }
   ]
   name "MyBot"
@@ -313,7 +293,7 @@ Robot {
   physics Physics {
     mass 10
   }
-  controller "1v0-motor-e-sensor-distancia"
+  controller "1v1"
 }
 CircleArena {
   radius 0.5
@@ -333,8 +313,7 @@ CircleArena {
     metalness 0
   }
 }
-Khepera3 {
-  translation 0.275771 0 0.12376
-  rotation 0 1 0 -2.3561953071795863
-  controller ""
+WoodenBox {
+  translation 0 0.05 0
+  size 0.5 0.1 0.1
 }
