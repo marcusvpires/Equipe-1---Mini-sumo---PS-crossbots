@@ -2,17 +2,17 @@
 #include <webots/distance_sensor.h>
 #include <webots/motor.h>
 #include <webots/robot.h>
+#include <math.h>
 
 #define TIME_STEP 1
+enum STATE { SEARCH, LINE_R, LINE_L, ATTACK };
+int last_state, state = SEARCH, MAX_SPEED = 20, step = 0, offset;
+double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
+float tm, tm_start, tm_relative;
 
 int main() {
   wb_robot_init();
   printf("Robo inicializado\n");
-
-  enum STATE { SEARCH, LINE_R, LINE_L, ATTACK };
-  int last_state, state = SEARCH, MAX_SPEED = 20, step = 0;
-  double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
-  float tm, tm_start, tm_relative;
 
   // Vetores para os sensores Lidar
   char lidar_tag[7][8] = {"lidar 1", "lidar 2", "lidar 3", "lidar 4",
@@ -37,7 +37,8 @@ int main() {
   wb_motor_set_velocity(left_motor, 0.0);
   wb_motor_set_velocity(right_motor, 0.0);
 
-  double lidar_v[7];
+  int m_lidar;
+  double lidar_v[7], m_lidar_v;
   double right_ir_v = 0, left_ir_v = 0;
 
   void check_line(double right_ir_v, double left_ir_v) {
@@ -75,8 +76,14 @@ int main() {
     tm = wb_robot_get_time();
 
     // valores dos lidares
+    m_lidar_v = 1000;
+    m_lidar = -1;
     for (int i = 0; i < 7; i++) {
       lidar_v[i] = wb_distance_sensor_get_value(lidar[i]);
+      if (lidar_v[i] < m_lidar_v) {
+        m_lidar_v = lidar_v[i];
+        m_lidar = i;
+      }
     }
 
     // sensor de linha ( 952 para preto e 1024 para branco )
@@ -84,9 +91,13 @@ int main() {
     right_ir_v = wb_distance_sensor_get_value(right_ir);
 
     check_line(right_ir_v, left_ir_v);
+    if (m_lidar_v < 1000) {
+      setState(ATTACK);
+    }
 
     tm_relative = tm - tm_start;
-    printf("state: %d; tm_relative: %f; step: %d\n", state, tm_relative, step);
+    printf("state: %d; tm_relative: %f; step: %d; lidar: %d\n", state,
+           tm_relative, step, m_lidar + 1);
 
     switch (state) {
       case SEARCH:
@@ -102,6 +113,11 @@ int main() {
         speed_1 = 20;
         speed_2 = -20;
         if (tm_relative > 0.2) setState(SEARCH);
+        break;
+      case ATTACK:
+        offset = m_lidar - 3;
+        speed_1 = 20 * (1 - (offset / 1.5));
+        speed_2 = 20 * (1 + (offset / 1.5));
         break;
     }
 

@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.09168717792676187 0.970409670930393 0.22337979310714914 2.3834975626257453
-  position 1.172965039980653 0.9039991209636506 -1.361644454372404
+  orientation -0.06154722320374587 -0.9681466126172436 -0.24270161885258468 2.66008773217913
+  position -0.5368442271001008 0.7704101554239106 -1.2244195789884829
   follow "MyBot"
 }
 TexturedBackground {
@@ -16,7 +16,7 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 Robot {
-  translation -1.63138e-07 0 -0.37
+  translation -0.25 0 -0.37
   rotation 0 -1 0 1.5708
   children [
     DistanceSensor {
@@ -196,7 +196,8 @@ Robot {
       type "laser"
     }
     DEF lidares_frontais Transform {
-      translation 0 0 -0.04
+      translation 0 0 -0.03
+      rotation 1 0 0 0.13090030610042527
       children [
         DistanceSensor {
           translation -0.02 0.013 -0.042
@@ -310,7 +311,6 @@ CircleArena {
     metalness 0
   }
 }
-WoodenBox {
-  translation -0.11 0.05 -0.2
-  size 0.1 0.1 0.1
+Khepera3 {
+  translation 0.26 0 0
 }
