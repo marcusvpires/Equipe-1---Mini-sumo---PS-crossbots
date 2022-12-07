@@ -38,11 +38,10 @@ enum STATE
     BUSCAR,
     ATACAR,
     PARAR, 
-    DELAY
+    FORCAR
 };
 int state = ANDAR;
 int last_state;
-
 void recuar(int dir, WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r);
 int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, int dir);
 void verifica_oponente(double *lidar_value, int *menor_lidar);
@@ -91,17 +90,18 @@ int main()
         // sensor de linha ( 952 para preto e 1024 para branco )
         right_ground_ir_value = wb_distance_sensor_get_value(right_ground_ir);
         left_ground_ir_value = wb_distance_sensor_get_value(left_ground_ir);
-        printf("state: %d   tempo: %f   speed_l: %f speed_r: %f menor_lidar: %f\n", state, tempo, speed_l, speed_r, menor_lidar);
+        last_state = state;
+        dir = verifica_linha(right_ground_ir_value, left_ground_ir_value, dir);
+        verifica_oponente(lidar_value, &menor_lidar);
+        if (state == RECUAR && last_state != RECUAR)
+            tempo_inicio_tarefa = wb_robot_get_time();
         // printf("right_ground_ir_value = %f left_ground_ir_value = %f\n", right_ground_ir_value, left_ground_ir_value);
+        printf("state: %d   tempo: %f   speed_l: %f speed_r: %f menor_lidar: %d\n", state, tempo, speed_l, speed_r, menor_lidar);
         switch (state)
         {
             case ANDAR:
                 speed_l = 10;
                 speed_r = 10;
-                dir = verifica_linha(right_ground_ir_value, left_ground_ir_value, dir);
-                verifica_oponente(lidar_value, &menor_lidar);
-                if (state == RECUAR)
-                    tempo_inicio_tarefa = wb_robot_get_time();
                 break;
             case RECUAR:
                 recuar(dir, left_motor, right_motor, tempo_inicio_tarefa, tempo, &speed_l, &speed_r);
@@ -119,17 +119,17 @@ int main()
                 if(dir == LEFT)
                 {
                     speed_l = 10;
-                    speed_r = 20;
+                    speed_r = 15;
                 }
                 else
                 {
-                    speed_l = 20;
+                    speed_l = 15;
                     speed_r = 10;
                 }
-                verifica_oponente(lidar_value, &menor_lidar);
-                dir = verifica_linha(right_ground_ir_value, left_ground_ir_value, dir);
-                if (state == RECUAR)
-                    tempo_inicio_tarefa = wb_robot_get_time();
+                break;
+            case FORCAR:
+                speed_l = 40;
+                speed_r = 40;
                 break;
         }
         wb_motor_set_velocity(left_motor, speed_l);
@@ -142,6 +142,7 @@ int main()
 // verifica se algum lidar captou um sinal valido e coloca em modo ataque
 /*!
   \param lidar_value ponteiro para o vetor de leituras dos sensores lidar
+  \param lidar_value ponteiro para qual sensor apresentou a menor distancia
 */
 void verifica_oponente(double *lidar_value, int *menor_lidar)
 {
@@ -151,10 +152,13 @@ void verifica_oponente(double *lidar_value, int *menor_lidar)
     for (int i = 0; i < 7; i++) {
       if (lidar_value[i] < menor_dist && lidar_value[i] > 1) {
         menor_dist = lidar_value[i];
-        state = ATACAR;
         *menor_lidar = i;
       }
     }
+    if (menor_dist < 10 && *menor_lidar > 2 && *menor_lidar < 5)
+        state = FORCAR;
+    else if (menor_dist < 950)   
+        state = ATACAR;
 }
 //! Funcao de verificacao de linha, le qual sensor identificou a linha e indica que direcao seguir para comecar o recuo
 /*!
@@ -165,26 +169,29 @@ void verifica_oponente(double *lidar_value, int *menor_lidar)
 */
 int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, int dir)
 {
-    // Borda detectada no sensor da esquerda
-    if (left_ground_ir_value > 1020)
+    if(state != RECUAR)
     {
-        // Faz recuo pela direita
-        printf("Borda esquerda detectada\n");
-        state = RECUAR;
-        dir = RIGHT;
-    }
-    // Borda detectada no sensor da direita
-    else if (right_ground_ir_value > 1020)
-    {
-        // Faz recuo pela esquerda
-        printf("Borda direita detectada\n");
-        state = RECUAR;
-        dir = LEFT;
+        // Borda detectada no sensor da esquerda
+        if (left_ground_ir_value > 1000)
+        {
+            // Faz recuo pela direita
+            printf("Borda esquerda detectada\n");
+            state = RECUAR;
+            dir = RIGHT;
+        }
+        // Borda detectada no sensor da direita
+        else if (right_ground_ir_value > 1000)
+        {
+            // Faz recuo pela esquerda
+            printf("Borda direita detectada\n");
+            state = RECUAR;
+            dir = LEFT;
+        }
     }
     return dir;
 }
 
-//! Funcao de recuo, da ré e depois rotaciona
+//! Funcao de recuo, da ré, depois gira para o lado oposto e volta para o modo busca. 
 /*!
   \param dir um valor inteiro definido para a direcao
   \param left_motor WbDeviceTag para o motor da roda esquerda
@@ -205,13 +212,13 @@ void recuar(int dir, WbDeviceTag left_motor, WbDeviceTag right_motor, float temp
     {
         if (dir == RIGHT)
         {
-            *speed_l = -10;
-            *speed_r = 10;
+            *speed_l = 10;
+            *speed_r = -10;
         }
         else
         {
-            *speed_l = 10;
-            *speed_r = -10;
+            *speed_l = -10;
+            *speed_r = 10;
         }
     }
     else
