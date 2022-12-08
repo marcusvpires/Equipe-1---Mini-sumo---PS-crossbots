@@ -7,4 +7,4 @@ centralWidgetVisible: 1
 projectionMode: PERSPECTIVE
 renderingMode: PLAIN
 orthographicViewHeight: 1
-textFiles: 0 "controllers/1v1/1v1.c" "controllers/1v0-motor-e-sensor-distancia/1v0-motor-e-sensor-distancia.c"
+textFiles: 0 "controllers/1v1/1v1.c"
