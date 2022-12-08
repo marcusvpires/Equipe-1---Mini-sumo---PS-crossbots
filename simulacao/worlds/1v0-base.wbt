@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.22947221353160968 -0.936411978209245 -0.2654714867611057 1.7806638073218817
-  position -1.3320399876264022 0.822625722058191 -0.15643858799218197
+  orientation -0.2616094429052013 -0.9354666556876504 -0.23761867662158467 1.5413248453073396
+  position -4.83468942332197 4.283929210140696 0.15648668062924123
   follow "MyBot"
 }
 TexturedBackground {
@@ -72,7 +72,7 @@ Robot {
       aperture 1
     }
     DEF WHEELS Transform {
-      translation 0 -0.006 -0.045
+      translation 0 -0.006 0
       children [
         HingeJoint {
           jointParameters HingeJointParameters {
@@ -183,7 +183,6 @@ Robot {
         USE SENSOR
       ]
       name "lidar 1"
-      type "generic"
     }
     DEF lidares_frontais Transform {
       translation 0 0 -0.03
@@ -211,7 +210,6 @@ Robot {
             }
           ]
           name "lidar 2"
-          type "generic"
         }
         DistanceSensor {
           translation -0.02 0.013 -0.042
@@ -235,7 +233,6 @@ Robot {
             }
           ]
           name "lidar 3"
-          type "generic"
         }
         DistanceSensor {
           translation 0 0.013 -0.042
@@ -244,7 +241,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 4"
-          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -253,7 +249,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 5"
-          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -262,7 +257,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 6"
-          type "generic"
         }
       ]
     }
@@ -273,7 +267,6 @@ Robot {
         USE SENSOR
       ]
       name "lidar 7"
-      type "generic"
     }
   ]
   name "MyBot"
@@ -284,7 +277,7 @@ Robot {
   controller "1v1"
 }
 Robot {
-  translation 0.21 0 0.34856
+  translation 0.0900002 0 0.140713
   rotation 0 1 0 0.523595
   children [
     DistanceSensor {
@@ -350,7 +343,7 @@ Robot {
       aperture 1
     }
     DEF WHEELS Transform {
-      translation 0 -0.006 -0.045
+      translation 0 -0.006 0
       children [
         HingeJoint {
           jointParameters HingeJointParameters {
@@ -448,8 +441,25 @@ Robot {
             roughness 1
             metalness 0
           }
-          geometry Box {
-            size 0.1 0.06 0.1
+          geometry IndexedFaceSet {
+            coord Coordinate {
+              point [
+                1 1 1
+                1 -1 1
+                -1 -1 1
+                -1 1 1
+                1 1 -1
+                1 -1 -1
+                -1 -1 -1
+                -1 1 -1
+              ]
+            }
+            coordIndex [
+              0, 1, 2, 3, -1,
+              1, 2, 6, 5, -1,
+              0, 3, 7, 4, -1,
+              7, 5, 6, 7, -1,
+            ]
           }
         }
       ]
@@ -461,7 +471,6 @@ Robot {
         USE SENSOR
       ]
       name "lidar 1"
-      type "generic"
     }
     DEF lidares_frontais Transform {
       translation 0 0 -0.03
@@ -489,7 +498,6 @@ Robot {
             }
           ]
           name "lidar 2"
-          type "generic"
         }
         DistanceSensor {
           translation -0.02 0.013 -0.042
@@ -513,7 +521,6 @@ Robot {
             }
           ]
           name "lidar 3"
-          type "generic"
         }
         DistanceSensor {
           translation 0 0.013 -0.042
@@ -522,7 +529,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 4"
-          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -531,7 +537,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 5"
-          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -540,7 +545,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 6"
-          type "generic"
         }
       ]
     }
@@ -551,7 +555,6 @@ Robot {
         USE SENSOR
       ]
       name "lidar 7"
-      type "generic"
     }
   ]
   name "MyBot(1)"
