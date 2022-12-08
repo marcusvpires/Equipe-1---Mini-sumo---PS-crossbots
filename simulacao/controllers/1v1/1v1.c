@@ -5,7 +5,7 @@
 #include <webots/robot.h>
 
 #define TIME_STEP 1
-enum STATE { SEARCH, LINE_R, LINE_L, ATTACK, FORCE };
+enum STATE { SEARCH, LINE_R, LINE_L, ATTACK };
 int last_state, state = SEARCH, m_lidar;
 double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
 double lidar_v[7], m_lidar_v, right_ir_v = 0, left_ir_v = 0;
@@ -58,7 +58,7 @@ int main() {
     }
   }
 
-  void setState(int new_state) {
+  int setState(int new_state) {
     tm_start = tm;
     state = new_state;
   }
@@ -82,12 +82,11 @@ int main() {
     right_ir_v = wb_distance_sensor_get_value(right_ir);
 
     check_line(right_ir_v, left_ir_v);
-    if (m_lidar_v < 10 && m_lidar >= -2 && m_lidar <= 4 ) setState(FORCE);
     if (m_lidar_v < 1000) setState(ATTACK);
 
     tm_relative = tm - tm_start;
-    printf("\nstate: %d; tm_relative: %f; lidar: %d\n (%lf)", state, tm_relative,
-           m_lidar + 1, m_lidar_v);
+    printf("\nstate: %d; tm_relative: %f; lidar: %d\n", state, tm_relative,
+           m_lidar + 1);
 
     switch (state) {
       case SEARCH:
@@ -105,12 +104,8 @@ int main() {
         if (tm_relative > 0.2) setState(SEARCH);
         break;
       case ATTACK:
-        speed_1 = 25 * (1 - ((m_lidar - 3) / 1.5));
-        speed_2 = 25 * (1 + ((m_lidar - 3) / 1.5));
-        break;
-      case FORCE:
-        speed_1 = 40;
-        speed_2 = 40;
+        speed_1 = 20 * (1 - ((m_lidar - 3) / 1.5));
+        speed_2 = 20 * (1 + ((m_lidar - 3) / 1.5));
         break;
     }
 
