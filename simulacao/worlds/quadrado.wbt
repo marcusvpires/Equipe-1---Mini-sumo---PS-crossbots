@@ -560,6 +560,9 @@ Robot {
   translationStep 1e-05
   rotationStep 1e-05
   controller "producao"
+  controllerArgs [
+    "0"
+  ]
 }
 CircleArena {
   radius 0.5
