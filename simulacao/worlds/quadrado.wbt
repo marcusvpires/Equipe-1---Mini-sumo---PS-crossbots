@@ -193,7 +193,7 @@ Robot {
         USE SENSOR
       ]
       name "lidar 1"
-      type "laser"
+      type "generic"
     }
     DEF lidares_frontais Transform {
       translation 0 0 -0.03
@@ -221,7 +221,7 @@ Robot {
             }
           ]
           name "lidar 2"
-          type "laser"
+          type "generic"
         }
         DistanceSensor {
           translation -0.02 0.013 -0.042
@@ -245,7 +245,7 @@ Robot {
             }
           ]
           name "lidar 3"
-          type "laser"
+          type "generic"
         }
         DistanceSensor {
           translation 0 0.013 -0.042
@@ -254,7 +254,7 @@ Robot {
             USE SENSOR
           ]
           name "lidar 4"
-          type "laser"
+          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -263,7 +263,7 @@ Robot {
             USE SENSOR
           ]
           name "lidar 5"
-          type "laser"
+          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -272,7 +272,7 @@ Robot {
             USE SENSOR
           ]
           name "lidar 6"
-          type "laser"
+          type "generic"
         }
       ]
     }
@@ -283,7 +283,7 @@ Robot {
         USE SENSOR
       ]
       name "lidar 7"
-      type "laser"
+      type "generic"
     }
   ]
   name "MyBot"
@@ -471,7 +471,7 @@ Robot {
         USE SENSOR
       ]
       name "lidar 1"
-      type "laser"
+      type "generic"
     }
     DEF lidares_frontais Transform {
       translation 0 0 -0.03
@@ -499,7 +499,7 @@ Robot {
             }
           ]
           name "lidar 2"
-          type "laser"
+          type "generic"
         }
         DistanceSensor {
           translation -0.02 0.013 -0.042
@@ -523,7 +523,7 @@ Robot {
             }
           ]
           name "lidar 3"
-          type "laser"
+          type "generic"
         }
         DistanceSensor {
           translation 0 0.013 -0.042
@@ -532,7 +532,7 @@ Robot {
             USE SENSOR
           ]
           name "lidar 4"
-          type "laser"
+          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -541,7 +541,7 @@ Robot {
             USE SENSOR
           ]
           name "lidar 5"
-          type "laser"
+          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -550,7 +550,7 @@ Robot {
             USE SENSOR
           ]
           name "lidar 6"
-          type "laser"
+          type "generic"
         }
       ]
     }
@@ -561,7 +561,7 @@ Robot {
         USE SENSOR
       ]
       name "lidar 7"
-      type "laser"
+      type "generic"
     }
   ]
   name "MyBot(1)"
