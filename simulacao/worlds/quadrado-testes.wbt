@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.064240210227338 -0.9910535202640276 -0.1169876718386439 2.144823495974351
-  position -1.276724989993474 0.5079194917654747 -0.7776093029924773
+  orientation -0.021780838955928167 -0.9889069283069807 -0.146930875587223 2.8504776634874642
+  position -0.786895696470501 0.6800766748149669 -1.6953835200934213
   follow "desenvolvimento"
 }
 TexturedBackground {
@@ -16,7 +16,7 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 Robot {
-  translation -0.120641 0 -0.350868
+  translation -0.0727412 0 -0.172103
   rotation 0 1 0 -2.8797953071795863
   children [
     DistanceSensor {
@@ -309,8 +309,8 @@ CircleArena {
   }
 }
 Robot {
-  translation -0.140616 0 0.229306
-  rotation 0 1 0 2.2316
+  translation 0.0634686 0 0.0706538
+  rotation 0 -1 0 -0.3415753071795864
   children [
     DistanceSensor {
       translation 0.04 0.02 -0.07

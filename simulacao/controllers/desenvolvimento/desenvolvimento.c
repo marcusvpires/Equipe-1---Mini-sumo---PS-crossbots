@@ -7,26 +7,18 @@
 
 #define TIME_STEP 1
 float max_speed = 20;
-enum STATE { SEARCH, LINE_R, LINE_L, ATTACK, FORCE };
+enum STATE { SEARCH, LINE_R, LINE_L, ATTACK, FORCE, RETREAT };
 int last_state, state = SEARCH, m_lidar;
 double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
 double lidar_v[7], m_lidar_v, right_ir_v = 0, left_ir_v = 0;
 float tm, tm_start, tm_relative;
 
-int main(int argc, const char *argv[]) {
+int main(int argc, const char* argv[]) {
   wb_robot_init();
 
   printf("\niniciando controller desenvolvimento\n");
   // argumentos definidos nas configurações do robô
   for (int i = 0; i < argc; i++) printf("\nargumento[%i]=%s\n", i, argv[i]);
-  switch (argv[0])  
-  {
-  case "VOLTA":
-    printf("dar volta")
-    break;
-  default:
-    break;
-  }
 
   // Vetores para os sensores Lidar
   char lidar_tag[7][8] = {"lidar 1", "lidar 2", "lidar 3", "lidar 4",
@@ -78,6 +70,7 @@ int main(int argc, const char *argv[]) {
   }
 
   void setState(int new_state) {
+    printf("\nnovo estado: %d", new_state);
     tm_start = tm;
     state = new_state;
   }
@@ -87,7 +80,6 @@ int main(int argc, const char *argv[]) {
 
     // avalores do acelerometro [vetor (x, y, z)]
     const double* accelerometer_v = wb_accelerometer_get_values(accelerometer);
-    printf("\nacelerometro: %lf %lf %lf ", accelerometer_v[0], accelerometer_v[1], accelerometer_v[2]);
 
     // valores dos lidares
     m_lidar_v = 1000;
@@ -104,9 +96,12 @@ int main(int argc, const char *argv[]) {
     left_ir_v = wb_distance_sensor_get_value(left_ir);
     right_ir_v = wb_distance_sensor_get_value(right_ir);
 
-    check_line(right_ir_v, left_ir_v);
-    if (m_lidar_v < 10 && m_lidar >= -2 && m_lidar <= 4) setState(FORCE);
-    if (m_lidar_v < 1000) setState(ATTACK);
+    if (state != RETREAT) {
+      if (accelerometer_v[2] < -4 ) setState(RETREAT);
+      check_line(right_ir_v, left_ir_v);
+      if (m_lidar_v < 10 && m_lidar >= -2 && m_lidar <= 4) setState(FORCE);
+      if (m_lidar_v < 1000) setState(ATTACK);
+    }
 
     tm_relative = tm - tm_start;
 
@@ -124,6 +119,28 @@ int main(int argc, const char *argv[]) {
         speed_1 = max_speed;
         speed_2 = -max_speed;
         if (tm_relative > 0.2) setState(SEARCH);
+        break;
+      case RETREAT:
+        printf("\nRETREAT");
+        if (tm_relative < 0.4) {
+          printf("\n1");
+          speed_1 = -max_speed;
+          speed_2 = -max_speed;
+          wb_motor_set_velocity(right_motor, 20.0);
+          wb_motor_set_velocity(left_motor, 20.0);
+        } else if (accelerometer_v[2] < -4) {
+          printf("\ne1 %f", tm_relative);
+          speed_1 = 0;
+          speed_2 = -max_speed;
+        } else {
+          if (tm_relative < 0.3) {
+            printf("\nc1");
+            speed_1 = -max_speed;
+            speed_2 = -max_speed * 0.5;
+          } else {
+            setState(SEARCH);
+          };
+        }
         break;
       case ATTACK:
         speed_1 = max_speed * (1 - (m_lidar - 3) / 1.5);
