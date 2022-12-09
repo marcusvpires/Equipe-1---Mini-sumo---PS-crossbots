@@ -7,8 +7,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.16402305711969423 -0.9394356451735472 -0.3009270763996996 2.195113683080506
-  position -1.0446140914216826 0.8680134838683476 -0.6403933603486092
+  orientation -0.064240210227338 -0.9910535202640276 -0.1169876718386439 2.144823495974351
+  position -1.276724989993474 0.5079194917654747 -0.7776093029924773
   follow "desenvolvimento"
 }
 TexturedBackground {
@@ -186,6 +186,8 @@ Robot {
         }
       ]
     }
+    Accelerometer {
+    }
     DistanceSensor {
       translation -0.02 0.013 -0.07
       rotation 0 1 0 3.14159
@@ -287,6 +289,10 @@ Robot {
   translationStep 1e-05
   rotationStep 1e-05
   controller "desenvolvimento"
+}
+WoodenBox {
+  translation 0 0.05 0
+  size 0.1 0.1 0.1
 }
 CircleArena {
   radius 0.5

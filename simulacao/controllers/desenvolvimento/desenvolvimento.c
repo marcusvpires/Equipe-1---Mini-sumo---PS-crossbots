@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <webots/accelerometer.h>
 #include <webots/distance_sensor.h>
 #include <webots/motor.h>
 #include <webots/robot.h>
@@ -10,6 +11,7 @@ enum STATE { SEARCH, LINE_R, LINE_L, ATTACK, FORCE };
 int last_state, state = SEARCH, m_lidar;
 double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
 double lidar_v[7], m_lidar_v, right_ir_v = 0, left_ir_v = 0;
+double *accelerometer_v;
 float tm, tm_start, tm_relative;
 
 int main(int argc, const char *argv[]) {
@@ -17,8 +19,7 @@ int main(int argc, const char *argv[]) {
 
   printf("\niniciando controller desenvolvimento\n");
   // argumentos definidos nas configurações do robô
-  for (int i = 0; i < argc; i++)
-    printf("\nargumento[%i]=%s\n", i, argv[i]);
+  for (int i = 0; i < argc; i++) printf("\nargumento[%i]=%s\n", i, argv[i]);
 
   // Vetores para os sensores Lidar
   char lidar_tag[7][8] = {"lidar 1", "lidar 2", "lidar 3", "lidar 4",
@@ -42,6 +43,10 @@ int main(int argc, const char *argv[]) {
   wb_motor_set_position(right_motor, INFINITY);
   wb_motor_set_velocity(left_motor, 0.0);
   wb_motor_set_velocity(right_motor, 0.0);
+
+  // acelerometro
+  WbDeviceTag accelerometer = wb_robot_get_device("accelerometer");
+  wb_accelerometer_enable(accelerometer, TIME_STEP);
 
   void check_line(double right_ir_v, double left_ir_v) {
     if ((state == SEARCH || state == ATTACK) &&
@@ -72,6 +77,9 @@ int main(int argc, const char *argv[]) {
 
   while (wb_robot_step(TIME_STEP) != -1) {
     tm = wb_robot_get_time();
+
+    // avalores do acelerometro [vetor (x, y, z)]
+    accelerometer_v = wb_accelerometer_get_values(accelerometer);
 
     // valores dos lidares
     m_lidar_v = 1000;
