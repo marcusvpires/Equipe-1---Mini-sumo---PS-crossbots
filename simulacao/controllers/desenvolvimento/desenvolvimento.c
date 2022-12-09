@@ -14,6 +14,7 @@ float tm, tm_start, tm_relative;
 
 int main() {
   wb_robot_init();
+  printf("iniciando controller desenvolvimento");
 
   // Vetores para os sensores Lidar
   char lidar_tag[7][8] = {"lidar 1", "lidar 2", "lidar 3", "lidar 4",
