@@ -12,9 +12,13 @@ double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
 double lidar_v[7], m_lidar_v, right_ir_v = 0, left_ir_v = 0;
 float tm, tm_start, tm_relative;
 
-int main() {
+int main(int argc, const char *argv[]) {
   wb_robot_init();
-  printf("iniciando controller desenvolvimento");
+
+  printf("\niniciando controller desenvolvimento\n");
+  // argumentos definidos nas configurações do robô
+  for (int i = 0; i < argc; i++)
+    printf("\nargumento[%i]=%s\n", i, argv[i]);
 
   // Vetores para os sensores Lidar
   char lidar_tag[7][8] = {"lidar 1", "lidar 2", "lidar 3", "lidar 4",
@@ -121,5 +125,6 @@ int main() {
     wb_motor_set_velocity(right_motor, motor_1);
     wb_motor_set_velocity(left_motor, motor_2);
   }
+  wb_robot_cleanup();
   return 0;
 }
