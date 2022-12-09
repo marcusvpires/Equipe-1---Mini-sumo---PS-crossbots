@@ -45,7 +45,9 @@ enum MODO
     MODO_0,
     MODO_1,
     MODO_2, 
-    MODO_3
+    MODO_3,
+    MODO_4,
+    MODO_5
 };
 int state = MOVER;
 int last_state = 0;
@@ -269,6 +271,23 @@ estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l
             {
                 *speed_l = max_speed;
                 *speed_r = 0;
+            }
+            else
+            {
+                *speed_l = max_speed;
+                *speed_r = max_speed;
+            }
+        // Iniciar mais centralizado no mapa
+        case MODO_4:
+            if (tempo < (tempo_inicio_tarefa + 0.5))
+            { 
+                *speed_l = -max_speed;
+                *speed_r = 0;
+            }
+            else if ((tempo < (tempo_inicio_tarefa + 1)))
+            {
+                *speed_l = -max_speed;
+                *speed_r = -max_speed;
             }
             else
             {
