@@ -42,10 +42,10 @@ enum STATE
 };
 enum MODO
 {
+    MODO_0,
     MODO_1,
-    MODO_2,
-    MODO_3, 
-    MODO_4
+    MODO_2, 
+    MODO_3
 };
 int state = MOVER;
 int last_state = 0;
@@ -57,10 +57,11 @@ void verifica_oponente(double *lidar_value, int *menor_lidar);
 double speed_converter(int speed, int real_speed);
 void estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r);
 
-int main()
+int main(int argc, const char *argv[])
 {
     wb_robot_init(); /* necessary to initialize webots stuff */
     printf("Robo inicializado\n");
+    for (int i = 0; i < argc; i++) printf("argv[%i]=%s\n", i, argv[i]);
     /* Get and enable the distance sensors. */
     // Vetores para os sensores Lidar
     char lidar_tag[7][8] = {"lidar 1", "lidar 2", "lidar 3", "lidar 4", "lidar 5", "lidar 6", "lidar 7"};
@@ -87,7 +88,7 @@ int main()
     double right_ground_ir_value = 0, left_ground_ir_value = 0, speed_l = 0, speed_r = 0, real_speed_l = 0, real_speed_r = 0;
     double initial_velocity = 1;
     float tempo, tempo_inicio_tarefa;
-    int dir, controle = MODO_4;
+    int dir;
     int menor_lidar;
     while (wb_robot_step(TIME_STEP) != -1)
     {
@@ -110,7 +111,7 @@ int main()
         switch (state)
         {
             case MOVER:
-                estrategia(controle, tempo_inicio_tarefa, tempo, &speed_l, &speed_r);
+                estrategia(atoi(argv[1]), tempo_inicio_tarefa, tempo, &speed_l, &speed_r);
                 break;
             case RECUAR:
                 recuar(dir, tempo_inicio_tarefa, tempo, &speed_l, &speed_r);
@@ -243,21 +244,22 @@ int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, in
 */
 estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r)
 {
+    printf("controle: %d\n", controle);
     switch(controle)
     {
-        case MODO_1:
+        case MODO_0:
             *speed_l = max_speed;
             *speed_r = max_speed;
         break;
-        case MODO_2:
+        case MODO_1:
             *speed_l = 30;
             *speed_r = 15;
         break;
-        case MODO_3:
+        case MODO_2:
             *speed_l = 15;
             *speed_r = 30;
         break;
-        case MODO_4:
+        case MODO_3:
             if (tempo < (tempo_inicio_tarefa + 1))
             {
                 *speed_l = max_speed;
@@ -273,6 +275,7 @@ estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l
                 *speed_l = max_speed;
                 *speed_r = max_speed;
             }
+        break;
     }
 }
 
