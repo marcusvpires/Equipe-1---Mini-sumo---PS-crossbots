@@ -33,19 +33,29 @@ enum direcao
 };
 enum STATE
 {
-    ANDAR,
+    MOVER,
     RECUAR,
     BUSCAR,
     ATACAR,
     PARAR,
     FORCAR
 };
-int state = ANDAR;
-int last_state;
-void recuar(int dir, WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r);
+enum MODO
+{
+    MODO_1,
+    MODO_2,
+    MODO_3, 
+    MODO_4
+};
+int state = MOVER;
+int last_state = 0;
+float max_speed = 20;
+
+void recuar(int dir, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r);
 int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, int dir);
 void verifica_oponente(double *lidar_value, int *menor_lidar);
 double speed_converter(int speed, int real_speed);
+void estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r);
 
 int main()
 {
@@ -77,7 +87,7 @@ int main()
     double right_ground_ir_value = 0, left_ground_ir_value = 0, speed_l = 0, speed_r = 0, real_speed_l = 0, real_speed_r = 0;
     double initial_velocity = 1;
     float tempo, tempo_inicio_tarefa;
-    int dir;
+    int dir, controle = MODO_4;
     int menor_lidar;
     while (wb_robot_step(TIME_STEP) != -1)
     {
@@ -93,26 +103,25 @@ int main()
         last_state = state;
         dir = verifica_linha(right_ground_ir_value, left_ground_ir_value, dir);
         verifica_oponente(lidar_value, &menor_lidar);
-        if (state == RECUAR && last_state != RECUAR)
+        if ((state == RECUAR && last_state != RECUAR) || (state == MOVER && last_state != MOVER))
             tempo_inicio_tarefa = wb_robot_get_time();
         // printf("right_ground_ir_value = %f left_ground_ir_value = %f\n", right_ground_ir_value, left_ground_ir_value);
         printf("state: %d   tempo: %f   speed_l: %f speed_r: %f menor_lidar: %d\n", state, tempo, speed_l, speed_r, menor_lidar);
         switch (state)
         {
-            case ANDAR:
-                speed_l = 10;
-                speed_r = 10;
+            case MOVER:
+                estrategia(controle, tempo_inicio_tarefa, tempo, &speed_l, &speed_r);
                 break;
             case RECUAR:
-                recuar(dir, left_motor, right_motor, tempo_inicio_tarefa, tempo, &speed_l, &speed_r);
+                recuar(dir, tempo_inicio_tarefa, tempo, &speed_l, &speed_r);
                 break;
             case ATACAR:
                 // 7 sensores, 3 para esquerda em diferentes angulos, 3 para direita, um centralizado. 
                 // Se for o sensor central que capta a menor distancia, faz um movimento retilineo, caso não
                 // Faz o movimento mais curvo ou menos curvo em direção ao oponente quanto mais ou menos angulado for
                 // o sensor. 
-                speed_l = 20 * (1 + ((menor_lidar - 3) / 1.5)); 
-                speed_r = 20 * (1 - ((menor_lidar - 3) / 1.5));
+                speed_l = max_speed * (1 + ((menor_lidar - 3) / 1.5)); 
+                speed_r = max_speed * (1 - ((menor_lidar - 3) / 1.5));
                 break;
             case PARAR:
                 printf("Parando!\n");
@@ -226,34 +235,73 @@ int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, in
     return dir;
 }
 
+//! Funcao de estrategia para primeira movimentacao
+/*!
+  \param dir um valor inteiro definido para a direcao
+  \param speed_l referencia a velocidade do motor esquerdo
+  \param speed_r referencia a velocidade do motor direito
+*/
+estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r)
+{
+    switch(controle)
+    {
+        case MODO_1:
+            *speed_l = max_speed;
+            *speed_r = max_speed;
+        break;
+        case MODO_2:
+            *speed_l = 30;
+            *speed_r = 15;
+        break;
+        case MODO_3:
+            *speed_l = 15;
+            *speed_r = 30;
+        break;
+        case MODO_4:
+            if (tempo < (tempo_inicio_tarefa + 1))
+            {
+                *speed_l = max_speed;
+                *speed_r = max_speed;
+            }
+            else  if (tempo < (tempo_inicio_tarefa + 1.5))
+            {
+                *speed_l = max_speed;
+                *speed_r = 0;
+            }
+            else
+            {
+                *speed_l = max_speed;
+                *speed_r = max_speed;
+            }
+    }
+}
+
 //! Funcao de recuo, da ré, depois gira para o lado oposto do sensor que detectou a borda e volta para o modo busca.
 /*!
   \param dir um valor inteiro definido para a direcao
-  \param left_motor WbDeviceTag para o motor da roda esquerda
-  \param right_motor WbDeviceTag para o motor da roda direita
   \param tempo_inicio_tarefa float para o valor do tempo em que se iniciou o recuo
   \param tempo float para o tempo decorrido de simulacao
   \param speed_l referencia a velocidade do motor esquerdo
   \param speed_r referencia a velocidade do motor direito
 */
-void recuar(int dir, WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r)
+void recuar(int dir, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r)
 {
-    if (tempo < (tempo_inicio_tarefa + 1))
+    if (tempo < (tempo_inicio_tarefa + 0.3))
     {
-        *speed_l = -15;
-        *speed_r = -15;
+        *speed_l = -max_speed;
+        *speed_r = -max_speed;
     }
-    else if (tempo < (tempo_inicio_tarefa + 1.8))
+    else if (tempo < (tempo_inicio_tarefa + 0.7))
     {
         if (dir == RIGHT)
         {
-            *speed_l = 10;
-            *speed_r = -10;
+            *speed_l = max_speed;
+            *speed_r = -max_speed;
         }
         else
         {
-            *speed_l = -10;
-            *speed_r = 10;
+            *speed_l = -max_speed;
+            *speed_r = max_speed;
         }
     }
     else
