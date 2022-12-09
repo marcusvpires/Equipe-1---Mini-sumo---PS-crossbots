@@ -5,12 +5,15 @@
 #include <webots/robot.h>
 
 #define TIME_STEP 1
-#define MAX_SPEED 15 // altas velocidades causam mais bugs
-enum STATE { SEARCH, LINE_R, LINE_L, ATTACK };
+#define MAX_SPEED 15  // altas velocidades causam mais bugs
+enum STATE { SEARCH, LINE_R, LINE_L, ATTACK, FORCE };
 int last_state, state = SEARCH, m_lidar, offset;
 double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
 double lidar_v[7], m_lidar_v, right_ir_v = 0, left_ir_v = 0;
 float tm, tm_start, tm_relative;
+
+void check_line(double right_ir_v, double left_ir_v);
+void setState(int new_state);
 
 int main() {
   wb_robot_init();
@@ -38,17 +41,6 @@ int main() {
   wb_motor_set_velocity(left_motor, 0.0);
   wb_motor_set_velocity(right_motor, 0.0);
 
-  void check_line(double right_ir_v, double left_ir_v) {
-    if ((state == SEARCH || state == ATTACK) &&
-        (left_ir_v > 1000 || right_ir_v > 1000)) {
-      tm_start = tm;
-      if (left_ir_v > 1000)
-        state = LINE_R;
-      else
-        state = LINE_L;
-    }
-  }
-
   int setSpeed(int speed, int motor) {
     if (speed > MAX_SPEED) speed = MAX_SPEED;
     if (speed > motor + 5) {
@@ -60,12 +52,8 @@ int main() {
     }
   }
 
-  void setState(int new_state) {
-    tm_start = tm;
-    state = new_state;
-  }
-
   while (wb_robot_step(TIME_STEP) != -1) {
+    printf("loop");
     tm = wb_robot_get_time();
 
     // valores dos lidares
@@ -106,8 +94,8 @@ int main() {
         if (tm_relative > 0.2) setState(SEARCH);
         break;
       case ATTACK:
-        speed_1 = MAX_SPEED * (1 - offset/1.5);
-        speed_2 = MAX_SPEED * (1 + offset/1.5);
+        speed_1 = MAX_SPEED * (1 - offset / 1.5);
+        speed_2 = MAX_SPEED * (1 + offset / 1.5);
         break;
     }
 
@@ -118,4 +106,20 @@ int main() {
     wb_motor_set_velocity(left_motor, motor_2);
   }
   return 0;
+}
+
+void setState(int new_state) {
+  printf("set state: %d", new_state);
+  tm_start = tm;
+  state = new_state;
+}
+
+void check_line(double right_ir_v, double left_ir_v) {
+  printf("check line: %lf %lf", right_ir_v, left_ir_v);
+  if ((left_ir_v < 1000 || right_ir_v < 1000)) {
+    if (left_ir_v < 1000)
+      setState(LINE_L);
+    else
+      setState(LINE_R);
+  }
 }
