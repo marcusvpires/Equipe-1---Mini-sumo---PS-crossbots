@@ -37,7 +37,7 @@ enum STATE
     RECUAR,
     BUSCAR,
     ATACAR,
-    PARAR, 
+    PARAR,
     FORCAR
 };
 int state = ANDAR;
@@ -45,6 +45,7 @@ int last_state;
 void recuar(int dir, WbDeviceTag left_motor, WbDeviceTag right_motor, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r);
 int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, int dir);
 void verifica_oponente(double *lidar_value, int *menor_lidar);
+double speed_converter(int speed, int real_speed);
 
 int main()
 {
@@ -73,11 +74,10 @@ int main()
     wb_motor_set_velocity(left_motor, 0.0);
     wb_motor_set_velocity(right_motor, 0.0);
     double lidar_value[7];
-    double right_ground_ir_value = 0, left_ground_ir_value = 0, speed_l, speed_r;
+    double right_ground_ir_value = 0, left_ground_ir_value = 0, speed_l = 0, speed_r = 0, real_speed_l = 0, real_speed_r = 0;
     double initial_velocity = 1;
     float tempo, tempo_inicio_tarefa;
     int dir;
-    double left_speed = 0, right_speed = 0;
     int menor_lidar;
     while (wb_robot_step(TIME_STEP) != -1)
     {
@@ -107,7 +107,11 @@ int main()
                 recuar(dir, left_motor, right_motor, tempo_inicio_tarefa, tempo, &speed_l, &speed_r);
                 break;
             case ATACAR:
-                speed_l = 20 * (1 + ((menor_lidar - 3) / 1.5));
+                // 7 sensores, 3 para esquerda em diferentes angulos, 3 para direita, um centralizado. 
+                // Se for o sensor central que capta a menor distancia, faz um movimento retilineo, caso não
+                // Faz o movimento mais curvo ou menos curvo em direção ao oponente quanto mais ou menos angulado for
+                // o sensor. 
+                speed_l = 20 * (1 + ((menor_lidar - 3) / 1.5)); 
                 speed_r = 20 * (1 - ((menor_lidar - 3) / 1.5));
                 break;
             case PARAR:
@@ -116,7 +120,7 @@ int main()
                 speed_r = 0;
                 break;
             case BUSCAR:
-                if(dir == LEFT)
+                if (dir == LEFT)
                 {
                     speed_l = 10;
                     speed_r = 15;
@@ -132,35 +136,67 @@ int main()
                 speed_r = 40;
                 break;
         }
-        wb_motor_set_velocity(left_motor, speed_l);
-        wb_motor_set_velocity(right_motor, speed_r);
+        real_speed_l = speed_converter(speed_l, real_speed_l);
+        real_speed_r = speed_converter(speed_r, real_speed_r);
+        wb_motor_set_velocity(left_motor, real_speed_l);
+        wb_motor_set_velocity(right_motor, real_speed_r);
     }
     return 0;
 }
 
-//! Funcao de verificacao de oponente, 
+//! Funcao de conversao de velocidade, após o calculo de velocidade a partir de qual lidar tem a menor distancia,
+// essa funcao faz com que a aceleraçao ou desaceleracao ocorra de maneira progressiva, recebendo a velocidade 
+// anterior do motor e a velocidade calculada pela formula no ataque.
+// Caso a velocidade calculada seja maior que a velocidade anterior somada a 5, ou menor que a velocidade anterior 
+// subtraida em 5, aumentará ou diminuirá somente em 5 a velocidade. Caso não, colocará a velocidade calculada.
+/*!
+  \param speed velocidade calculada no estado ataque
+  \param real_speed velocidade anterior real colocada no motor
+  \return velocidade a ser colocada no motor
+*/
+double speed_converter(int speed, int real_speed)
+{
+    if (speed > real_speed + 5)
+    {
+        return (real_speed + 5);
+    }
+    else if (speed < real_speed - 5)
+    {
+        return (real_speed - 5);
+    }
+    else
+    {
+        return speed;
+    }
+}
+
+//! Funcao de verificacao de oponente,
 // verifica se algum lidar captou um sinal valido e coloca em modo ataque
+// Retorna de informação qual lidar captou a menor distancia para definir o movimento de ataque
 /*!
   \param lidar_value ponteiro para o vetor de leituras dos sensores lidar
   \param lidar_value ponteiro para qual sensor apresentou a menor distancia
 */
 void verifica_oponente(double *lidar_value, int *menor_lidar)
 {
-     // Encontrar a menor distância
+    // Encontrar a menor distância
     double menor_dist = 950.0;
     *menor_lidar = -1;
-    for (int i = 0; i < 7; i++) {
-      if (lidar_value[i] < menor_dist && lidar_value[i] > 1) {
-        menor_dist = lidar_value[i];
-        *menor_lidar = i;
-      }
+    for (int i = 0; i < 7; i++)
+    {
+        if (lidar_value[i] < menor_dist && lidar_value[i] > 1)
+        {
+            menor_dist = lidar_value[i];
+            *menor_lidar = i;
+        }
     }
     if (menor_dist < 10 && *menor_lidar > 2 && *menor_lidar < 5)
         state = FORCAR;
-    else if (menor_dist < 950)   
+    else if (menor_dist < 950)
         state = ATACAR;
 }
-//! Funcao de verificacao de linha, le qual sensor identificou a linha e indica que direcao seguir para comecar o recuo
+//! Funcao de verificacao de linha, le qual sensor identificou a linha e indica que direcao 
+// seguir para comecar o recuo
 /*!
   \param dir um valor inteiro definido para a direcao
   \param right_ground_ir_value leitura do sensor de linha direito
@@ -168,7 +204,7 @@ void verifica_oponente(double *lidar_value, int *menor_lidar)
 */
 int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, int dir)
 {
-    if(state != RECUAR)
+    if (state != RECUAR)
     {
         // Borda detectada no sensor da esquerda
         if (left_ground_ir_value > 1000)
@@ -190,7 +226,7 @@ int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, in
     return dir;
 }
 
-//! Funcao de recuo, da ré, depois gira para o lado oposto e volta para o modo busca. 
+//! Funcao de recuo, da ré, depois gira para o lado oposto do sensor que detectou a borda e volta para o modo busca.
 /*!
   \param dir um valor inteiro definido para a direcao
   \param left_motor WbDeviceTag para o motor da roda esquerda
