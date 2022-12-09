@@ -19,6 +19,14 @@ int main(int argc, const char *argv[]) {
   printf("\niniciando controller desenvolvimento\n");
   // argumentos definidos nas configurações do robô
   for (int i = 0; i < argc; i++) printf("\nargumento[%i]=%s\n", i, argv[i]);
+  switch (argv[0])  
+  {
+  case "VOLTA":
+    printf("dar volta")
+    break;
+  default:
+    break;
+  }
 
   // Vetores para os sensores Lidar
   char lidar_tag[7][8] = {"lidar 1", "lidar 2", "lidar 3", "lidar 4",
