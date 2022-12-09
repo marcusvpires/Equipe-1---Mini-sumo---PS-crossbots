@@ -87,7 +87,7 @@ int main() {
     if (m_lidar_v < 10 && m_lidar >= -2 && m_lidar <= 4) setState(FORCE);
     if (m_lidar_v < 1000) setState(ATTACK);
 
-    tm_relative = tm - tm_start; b
+    tm_relative = tm - tm_start;
 
     switch (state) {
       case SEARCH:

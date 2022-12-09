@@ -9,7 +9,7 @@ WorldInfo {
 Viewpoint {
   orientation -0.22947221353160968 -0.936411978209245 -0.2654714867611057 1.7806638073218817
   position -1.3320399876264022 0.822625722058191 -0.15643858799218197
-  follow "MyBot"
+  follow "desenvolvimento"
 }
 TexturedBackground {
 }
@@ -193,7 +193,6 @@ Robot {
         USE SENSOR
       ]
       name "lidar 1"
-      type "generic"
     }
     DEF lidares_frontais Transform {
       translation 0 0 -0.03
@@ -221,7 +220,6 @@ Robot {
             }
           ]
           name "lidar 2"
-          type "generic"
         }
         DistanceSensor {
           translation -0.02 0.013 -0.042
@@ -245,7 +243,6 @@ Robot {
             }
           ]
           name "lidar 3"
-          type "generic"
         }
         DistanceSensor {
           translation 0 0.013 -0.042
@@ -254,7 +251,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 4"
-          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -263,7 +259,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 5"
-          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -272,7 +267,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 6"
-          type "generic"
         }
       ]
     }
@@ -283,15 +277,14 @@ Robot {
         USE SENSOR
       ]
       name "lidar 7"
-      type "generic"
     }
   ]
-  name "MyBot"
+  name "desenvolvimento"
   boundingObject USE BODY
   physics Physics {
     mass 10
   }
-  controller "1v1"
+  controller "desenvolvimento"
 }
 Robot {
   translation 0.21 0 0.34856
@@ -471,7 +464,6 @@ Robot {
         USE SENSOR
       ]
       name "lidar 1"
-      type "generic"
     }
     DEF lidares_frontais Transform {
       translation 0 0 -0.03
@@ -499,7 +491,6 @@ Robot {
             }
           ]
           name "lidar 2"
-          type "generic"
         }
         DistanceSensor {
           translation -0.02 0.013 -0.042
@@ -523,7 +514,6 @@ Robot {
             }
           ]
           name "lidar 3"
-          type "generic"
         }
         DistanceSensor {
           translation 0 0.013 -0.042
@@ -532,7 +522,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 4"
-          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -541,7 +530,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 5"
-          type "generic"
         }
         DistanceSensor {
           translation 0.02 0.013 -0.042
@@ -550,7 +538,6 @@ Robot {
             USE SENSOR
           ]
           name "lidar 6"
-          type "generic"
         }
       ]
     }
@@ -561,15 +548,14 @@ Robot {
         USE SENSOR
       ]
       name "lidar 7"
-      type "generic"
     }
   ]
-  name "MyBot(1)"
+  name "producao"
   boundingObject USE BODY
   physics Physics {
     mass 10
   }
-  controller "1v0-motor-e-sensor-distancia"
+  controller "producao"
 }
 CircleArena {
   radius 0.5
