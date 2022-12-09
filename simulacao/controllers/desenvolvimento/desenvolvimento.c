@@ -11,7 +11,7 @@ enum STATE { SEARCH, LINE_R, LINE_L, ATTACK, FORCE };
 int last_state, state = SEARCH, m_lidar;
 double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
 double lidar_v[7], m_lidar_v, right_ir_v = 0, left_ir_v = 0;
-double *accelerometer_v;
+double accelerometer_v;
 float tm, tm_start, tm_relative;
 
 int main(int argc, const char *argv[]) {
@@ -79,7 +79,9 @@ int main(int argc, const char *argv[]) {
     tm = wb_robot_get_time();
 
     // avalores do acelerometro [vetor (x, y, z)]
-    accelerometer_v = wb_accelerometer_get_values(accelerometer);
+    *accelerometer_v = *wb_accelerometer_get_values(accelerometer);
+    *(accelerometer_v + 1) = *(wb_accelerometer_get_values(accelerometer) + 1);
+    *(accelerometer_v + 2) = *(wb_accelerometer_get_values(accelerometer) + 2);
 
     // valores dos lidares
     m_lidar_v = 1000;
