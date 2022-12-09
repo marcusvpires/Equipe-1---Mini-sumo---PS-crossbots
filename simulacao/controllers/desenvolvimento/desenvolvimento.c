@@ -11,7 +11,6 @@ enum STATE { SEARCH, LINE_R, LINE_L, ATTACK, FORCE };
 int last_state, state = SEARCH, m_lidar;
 double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
 double lidar_v[7], m_lidar_v, right_ir_v = 0, left_ir_v = 0;
-double accelerometer_v;
 float tm, tm_start, tm_relative;
 
 int main(int argc, const char *argv[]) {
@@ -20,6 +19,14 @@ int main(int argc, const char *argv[]) {
   printf("\niniciando controller desenvolvimento\n");
   // argumentos definidos nas configurações do robô
   for (int i = 0; i < argc; i++) printf("\nargumento[%i]=%s\n", i, argv[i]);
+  switch (argv[0])  
+  {
+  case "VOLTA":
+    printf("dar volta")
+    break;
+  default:
+    break;
+  }
 
   // Vetores para os sensores Lidar
   char lidar_tag[7][8] = {"lidar 1", "lidar 2", "lidar 3", "lidar 4",
@@ -79,9 +86,8 @@ int main(int argc, const char *argv[]) {
     tm = wb_robot_get_time();
 
     // avalores do acelerometro [vetor (x, y, z)]
-    *accelerometer_v = *wb_accelerometer_get_values(accelerometer);
-    *(accelerometer_v + 1) = *(wb_accelerometer_get_values(accelerometer) + 1);
-    *(accelerometer_v + 2) = *(wb_accelerometer_get_values(accelerometer) + 2);
+    const double* accelerometer_v = wb_accelerometer_get_values(accelerometer);
+    printf("\nacelerometro: %lf %lf %lf ", accelerometer_v[0], accelerometer_v[1], accelerometer_v[2]);
 
     // valores dos lidares
     m_lidar_v = 1000;
