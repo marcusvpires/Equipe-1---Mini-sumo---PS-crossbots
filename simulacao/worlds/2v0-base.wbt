@@ -1,0 +1,242 @@
+#VRML_SIM R2021a utf8
+WorldInfo {
+  info [
+    "The MyBot robot, the robot used in the tutorial of Webots, with Physics in the simulation"
+  ]
+  title "MyBot with Physics"
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation 0.4384594471232732 0.8268203422752379 0.35230872090854093 4.67510827059157
+  position -1.3228421009558384 1.335054947419488 0.19665144154597308
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Robot {
+  translation -0.01612 0 0
+  children [
+    DistanceSensor {
+      translation 0.04 0.02 -0.06
+      rotation -0.5816878392534963 0.5816888392532199 -0.5685748428772068 2.1076153071795867
+      children [
+        DEF SENSOR Transform {
+          rotation 0 0 1 1.57
+        }
+      ]
+      name "right_ground_infrared"
+      type "infra-red"
+      numberOfRays 2
+      aperture 1
+    }
+    DistanceSensor {
+      translation -0.0399999 0.02 -0.06
+      rotation -0.5816871699850122 0.5816901699858891 -0.5685741661530315 2.10762
+      children [
+        DEF SENSOR Transform {
+          rotation 0 0 1 1.57
+        }
+      ]
+      name "left_ground_infrared"
+      type "infra-red"
+      numberOfRays 2
+      aperture 1
+    }
+    DEF body Transform {
+      translation 0 0.001 -0.03
+      scale 0.04 0.05 0.05
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.333333 0 1
+          }
+          geometry IndexedFaceSet {
+            coord Coordinate {
+              point [
+                1 0 -1
+                -1 0 -1
+                -1 0 1
+                1 0 1
+                1 1 -0.2
+                -1 1 -0.2
+                -1 1 1
+                1 1 1
+              ]
+            }
+            coordIndex [
+              0, 4, 7, 3, -1, 0, 1, 5, 4, -1, 2, 6, 5, 1, -1, 3, 7, 6, 2, -1, 0, 3, 2, 1, -1, 4, 5, 6, 7, -1
+            ]
+          }
+        }
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis -1 0 0
+        anchor 0 0.025 0
+      }
+      device [
+        RotationalMotor {
+          name "left wheel motor"
+          maxVelocity 20
+        }
+        PositionSensor {
+          name "left wheel sensor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.04500000000000001 0.025 0
+        rotation -1 0 0 0
+        children [
+          DEF WHEEL Transform {
+            rotation 0 0 1 1.57
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 1 0 0
+                  roughness 1
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.01
+                  radius 0.025
+                }
+              }
+            ]
+          }
+        ]
+        name "left wheel"
+        boundingObject USE WHEEL
+        physics DEF PHYSICS_WHEEL Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis -1 0 0
+        anchor 0 0.025 0
+      }
+      device [
+        RotationalMotor {
+          name "right wheel motor"
+          maxVelocity 20
+        }
+        PositionSensor {
+          name "right wheel sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.04499999999999997 0.025 0
+        rotation -1 0 0 0
+        children [
+          USE WHEEL
+        ]
+        name "right wheel"
+        boundingObject USE WHEEL
+        physics USE PHYSICS_WHEEL
+      }
+    }
+    DistanceSensor {
+      translation -0.02 0.013 -0.07
+      rotation 0 1 0 3.14159
+      children [
+        USE SENSOR
+      ]
+      name "lidar 1"
+    }
+    Transform {
+      translation 0 0 -0.03
+      rotation 1 0 0 0.13090030610012526
+      children [
+        DistanceSensor {
+          translation -0.02 0.013 -0.042
+          rotation 0 1 0 2.07
+          children [
+            DEF SENSOR Transform {
+              rotation 0 0 1 1.57
+            }
+          ]
+          name "lidar 2"
+        }
+        DistanceSensor {
+          translation -0.02 0.013 -0.042
+          rotation 0 1 0 1.80822
+          children [
+            DEF SENSOR Transform {
+              rotation 0 0 1 1.57
+            }
+          ]
+          name "lidar 3"
+        }
+        DistanceSensor {
+          translation 0 0.013 -0.042
+          rotation 0 1 0 1.5936
+          children [
+            USE SENSOR
+          ]
+          name "lidar 4"
+        }
+        DistanceSensor {
+          translation 0.02 0.013 -0.042
+          rotation 0 1 0 1.3318
+          children [
+            USE SENSOR
+          ]
+          name "lidar 5"
+        }
+        DistanceSensor {
+          translation 0.02 0.013 -0.042
+          rotation 0 1 0 1.07
+          children [
+            USE SENSOR
+          ]
+          name "lidar 6"
+        }
+      ]
+    }
+    DistanceSensor {
+      translation 0.02 0.013 -0.07
+      rotation 0 1 0 -5.307179586466759e-06
+      children [
+        USE SENSOR
+      ]
+      name "lidar 7"
+    }
+  ]
+  name "GADO"
+  boundingObject USE body
+  physics Physics {
+    density -1
+    mass 0.5
+  }
+  translationStep 1e-05
+  rotationStep 1e-05
+  controller "1v1"
+  cpuConsumption 50
+}
+CircleArena {
+  radius 0.5
+  floorAppearance PBRAppearance {
+    baseColor 0 0 0
+    roughness 1
+    metalness 0
+    occlusionMap ImageTexture {
+      url [
+        "textures/parquetry/chequered_parquetry_occlusion.jpg"
+      ]
+    }
+  }
+  wallThickness 0.03
+  wallHeight 0.0001
+  wallAppearance PBRAppearance {
+    metalness 0
+  }
+}
+WoodenBox {
+  translation -0.14 0.05 -0.39
+  size 0.1 0.1 0.1
+  mass 0.2
+}
