@@ -5,7 +5,7 @@
 #include <webots/robot.h>
 
 #define TIME_STEP 1
-#define MAX_SPEED 20
+float max_speed = 20;
 enum STATE { SEARCH, LINE_R, LINE_L, ATTACK, FORCE };
 int last_state, state = SEARCH, m_lidar;
 double speed_2 = 0, speed_1 = 0, motor_1 = 0, motor_2 = 0;
@@ -50,7 +50,7 @@ int main() {
   }
 
   int setSpeed(int speed, int motor) {
-    if (speed > MAX_SPEED) speed = MAX_SPEED;
+    if (speed > max_speed) speed = max_speed;
     if (speed > motor + 5) {
       return (motor + 5);
     } else if (speed < motor - 5) {
@@ -87,39 +87,35 @@ int main() {
     if (m_lidar_v < 10 && m_lidar >= -2 && m_lidar <= 4) setState(FORCE);
     if (m_lidar_v < 1000) setState(ATTACK);
 
-    tm_relative = tm - tm_start;
-    printf("\nstate: %d; tm_relative: %f; lidar: %d\n (%lf)", state,
-           tm_relative, m_lidar + 1, m_lidar_v);
+    tm_relative = tm - tm_start; b
 
     switch (state) {
       case SEARCH:
-        speed_1 = MAX_SPEED / 2;
-        speed_2 = MAX_SPEED / 2;
+        speed_1 = max_speed / 2;
+        speed_2 = max_speed / 2;
         break;
       case LINE_R:
-        speed_1 = -MAX_SPEED;
-        speed_2 = MAX_SPEED;
+        speed_1 = -max_speed;
+        speed_2 = max_speed;
         if (tm_relative > 0.2) setState(SEARCH);
         break;
       case LINE_L:
-        speed_1 = MAX_SPEED;
-        speed_2 = -MAX_SPEED;
+        speed_1 = max_speed;
+        speed_2 = -max_speed;
         if (tm_relative > 0.2) setState(SEARCH);
         break;
       case ATTACK:
-        speed_1 = MAX_SPEED * (1 - (m_lidar - 3) / 1.5);
-        speed_2 = MAX_SPEED * (1 + (m_lidar - 3) / 1.5);
+        speed_1 = max_speed * (1 - (m_lidar - 3) / 1.5);
+        speed_2 = max_speed * (1 + (m_lidar - 3) / 1.5);
         break;
       case FORCE:
-        speed_1 = MAX_SPEED;
-        speed_2 = MAX_SPEED;
+        speed_1 = max_speed;
+        speed_2 = max_speed;
         break;
     }
 
     motor_1 = setSpeed(speed_1, motor_1);
     motor_2 = setSpeed(speed_2, motor_2);
-    printf("1: %lf >> %lf;  2: %lf >> %lf\n", motor_1, speed_1, motor_2,
-           speed_2);
 
     wb_motor_set_velocity(right_motor, motor_1);
     wb_motor_set_velocity(left_motor, motor_2);
