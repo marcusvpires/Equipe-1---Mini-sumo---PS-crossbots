@@ -244,7 +244,7 @@ int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, in
   \param speed_l referencia a velocidade do motor esquerdo
   \param speed_r referencia a velocidade do motor direito
 */
-estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r)
+void estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r)
 {
     printf("controle: %d\n", controle);
     switch(controle)
@@ -294,6 +294,11 @@ estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l
                 *speed_l = max_speed;
                 *speed_r = max_speed;
             }
+        break;
+        //Virado para o lado esquerdo um pouco proximo a borda
+        case MODO_5:
+            *speed_l = -max_speed;
+            *speed_r = -15;
         break;
     }
 }
