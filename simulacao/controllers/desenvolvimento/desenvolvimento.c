@@ -47,14 +47,20 @@ int main(int argc, const char* argv[]) {
   WbDeviceTag accelerometer = wb_robot_get_device("accelerometer");
   wb_accelerometer_enable(accelerometer, TIME_STEP);
 
+  void setState(int new_state) {
+    printf("\nnovo estado: %d", new_state);
+    tm_start = tm;
+    state = new_state;
+  }
+
   void check_line(double right_ir_v, double left_ir_v) {
     if ((state == SEARCH || state == ATTACK) &&
         (left_ir_v > 1000 || right_ir_v > 1000)) {
       tm_start = tm;
       if (left_ir_v > 1000)
-        state = LINE_R;
+        setState(LINE_R);
       else
-        state = LINE_L;
+        setState(LINE_L);
     }
   }
 
@@ -67,12 +73,6 @@ int main(int argc, const char* argv[]) {
     } else {
       return speed;
     }
-  }
-
-  void setState(int new_state) {
-    printf("\nnovo estado: %d", new_state);
-    tm_start = tm;
-    state = new_state;
   }
 
   while (wb_robot_step(TIME_STEP) != -1) {
@@ -97,7 +97,7 @@ int main(int argc, const char* argv[]) {
     right_ir_v = wb_distance_sensor_get_value(right_ir);
 
     if (state != RETREAT) {
-      if (accelerometer_v[2] < -4 ) setState(RETREAT);
+      if (accelerometer_v[2] < -4) setState(RETREAT);
       check_line(right_ir_v, left_ir_v);
       if (m_lidar_v < 10 && m_lidar >= -2 && m_lidar <= 4) setState(FORCE);
       if (m_lidar_v < 1000) setState(ATTACK);
@@ -121,26 +121,33 @@ int main(int argc, const char* argv[]) {
         if (tm_relative > 0.2) setState(SEARCH);
         break;
       case RETREAT:
-        printf("\nRETREAT");
-        if (tm_relative < 0.4) {
-          printf("\n1");
-          speed_1 = -max_speed;
-          speed_2 = -max_speed;
-          wb_motor_set_velocity(right_motor, 20.0);
-          wb_motor_set_velocity(left_motor, 20.0);
-        } else if (accelerometer_v[2] < -4) {
-          printf("\ne1 %f", tm_relative);
-          speed_1 = 0;
-          speed_2 = -max_speed;
-        } else {
-          if (tm_relative < 0.3) {
-            printf("\nc1");
-            speed_1 = -max_speed;
-            speed_2 = -max_speed * 0.5;
+        if (tm_relative < 0.2) {
+          if (lidar_v[1] < 1000) {
+            speed_1 = -max_speed*0.5;
+            speed_2 = -max_speed;
+            wb_motor_set_velocity(right_motor, speed_1);
+            wb_motor_set_velocity(left_motor, speed_2);
           } else {
-            setState(SEARCH);
-          };
-        }
+            speed_1 = -max_speed;
+            speed_2 = -max_speed*0.5;
+            wb_motor_set_velocity(right_motor, speed_1);
+            wb_motor_set_velocity(left_motor, speed_2);
+          }
+        } else if (accelerometer_v[2] < -4) {
+          if (lidar_v[1] < 1000) {
+            speed_1 = 0;
+            speed_2 = -max_speed;
+            wb_motor_set_velocity(right_motor, speed_1);
+            wb_motor_set_velocity(left_motor, speed_2);
+          } else {
+            speed_1 = -max_speed;
+            speed_2 = 0;
+            wb_motor_set_velocity(right_motor, speed_1);
+            wb_motor_set_velocity(left_motor, speed_2);
+          }
+          if (tm_relative < 0.4) tm_start = 0;
+        } else
+          setState(SEARCH);
         break;
       case ATTACK:
         speed_1 = max_speed * (1 - (m_lidar - 3) / 1.5);
