@@ -45,7 +45,9 @@ enum MODO
     MODO_0,
     MODO_1,
     MODO_2, 
-    MODO_3
+    MODO_3,
+    MODO_4,
+    MODO_5
 };
 int state = MOVER;
 int last_state = 0;
@@ -242,7 +244,7 @@ int verifica_linha(double right_ground_ir_value, double left_ground_ir_value, in
   \param speed_l referencia a velocidade do motor esquerdo
   \param speed_r referencia a velocidade do motor direito
 */
-estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r)
+void estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l, double *speed_r)
 {
     printf("controle: %d\n", controle);
     switch(controle)
@@ -275,6 +277,28 @@ estrategia(int controle, float tempo_inicio_tarefa, float tempo, double *speed_l
                 *speed_l = max_speed;
                 *speed_r = max_speed;
             }
+        // Iniciar mais centralizado no mapa
+        case MODO_4:
+            if (tempo < (tempo_inicio_tarefa + 0.5))
+            { 
+                *speed_l = -max_speed;
+                *speed_r = 0;
+            }
+            else if ((tempo < (tempo_inicio_tarefa + 1)))
+            {
+                *speed_l = -max_speed;
+                *speed_r = -max_speed;
+            }
+            else
+            {
+                *speed_l = max_speed;
+                *speed_r = max_speed;
+            }
+        break;
+        //Virado para o lado esquerdo um pouco proximo a borda
+        case MODO_5:
+            *speed_l = -max_speed;
+            *speed_r = -15;
         break;
     }
 }
