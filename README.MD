@@ -8,13 +8,13 @@ A PCB foi desenvolvida de modo a incluir 2 headers de 3 vias para os sensores de
 
 A PCB possui um plano de terra, a vantagem da criação de um plano de terra é diminuir a necessidade de criação de trilhas para tantos terras, menos cobre a ser corroído no processo de confecção da placa, garante que todos os terras estejam mais facilmente conectados e diminui quedas de tensão significativas, pois melhora a condução da corrente pela PCB.
 
-![](videos\solid.jpg)
+![](videos/solid.jpg)
 
 # KiCad projeto eletrônico 
 
-![](videos\esquema.png)
+![](videos/esquema.png)
 
-![](videos\PCB.png)
+![](videos/PCB.png)
 
 ## Programação:
 
@@ -24,7 +24,7 @@ Caso o robô não esteja atacando e identifique uma linha, ele rotaciona para di
 
 [video de demonstração](https://www.youtube.com/watch?v=tuTpYWDZn94&feature=youtu.be)
 
-![](videos\fluxogramapng.png)
+![](videos/fluxogramapng.png)
 
 ## componentes
 
