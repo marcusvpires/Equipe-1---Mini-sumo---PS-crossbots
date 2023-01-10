@@ -97,10 +97,10 @@ int main(int argc, const char* argv[]) {
     right_ir_v = wb_distance_sensor_get_value(right_ir);
 
     if (state != RETREAT) {
-      if (accelerometer_v[2] < -4) setState(RETREAT);
-      check_line(right_ir_v, left_ir_v);
       if (m_lidar_v < 10 && m_lidar >= -2 && m_lidar <= 4) setState(FORCE);
       if (m_lidar_v < 1000) setState(ATTACK);
+      check_line(right_ir_v, left_ir_v);
+      if (accelerometer_v[2] < -4) setState(RETREAT);
     }
 
     tm_relative = tm - tm_start;
